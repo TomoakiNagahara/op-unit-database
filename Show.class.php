@@ -49,6 +49,13 @@ class Show
 				$name = $temp['Field'];
 				foreach( $temp as $key => $val ){
 					//	...
+					if( $key === 'Collation' or $key === 'Default' ){
+						if( $val === null ){
+							continue;
+						}
+					}
+
+					//	...
 					$key = lcfirst($key);
 
 					//	...
