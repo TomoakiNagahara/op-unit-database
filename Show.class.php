@@ -64,6 +64,13 @@ class Show
 						//	...
 						$result[$name]['type']   = $type;
 						$result[$name]['length'] = $length;
+
+						//	...
+						if( strpos($val, 'unsigned') ){
+							$result[$name]['unsigned'] = true;
+						}
+
+						//	...
 						continue;
 					}
 
