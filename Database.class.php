@@ -202,82 +202,125 @@ class Database implements \IF_DATABASE
 		return $this->_PDO ? true: false;
 	}
 
+	/** Count number of record at conditions.
+	 *
+	 * @see		\IF_DATABASE::Count()
+	 * @param	 array		 $config
+	 * @return	 integer	 $count
+	 */
 	function Count($config)
 	{
-		//	...
-		if(!$this->_SQL ){
-			return false;
-		}
-
-		//	...
-		$query = $this->_SQL->Count($config, $this);
-
-		//	...
-		return $this->Query($query, __FUNCTION__);
+		$count = $this->SQL($config, __FUNCTION__);
+		return empty($count) ? 0: (int)$count;
 	}
 
+	/** Select record at conditions.
+	 *
+	 * <pre>
+	 * //	Configuration.
+	 * $config = [];
+	 * $config['table'] = 't_table';
+	 * $config['limit'] = 1;
+	 * $config['where']['value'] = $value;
+	 *
+	 * //	Execute.
+	 * $record = $db->Select($config);
+	 * </pre>
+	 *
+	 * @see		\IF_DATABASE::Select()
+	 * @param	 array		 $config
+	 * @return	 array		 $record
+	 */
 	function Select($config)
 	{
-		//	...
-		if(!$this->_SQL ){
-			return [];
-		}
-
-		//	...
-		$query = $this->_SQL->Select($config, $this);
-
-		//	...
-		return $this->Query($query, __FUNCTION__);
+		return $this->SQL($config, __FUNCTION__);
 	}
 
+	/** Insert new record.
+	 *
+	 * <pre>
+	 * //	Configuration.
+	 * $config = [];
+	 * $config['table'] = 't_table';
+	 * $config['set']['value'] = $value;
+	 *
+	 * //	Execute.
+	 * $new_id = $db->Insert($config);
+	 * </pre>
+	 *
+	 * @see		\IF_DATABASE::Insert()
+	 * @param	 array		 $config
+	 * @return	 integer	 $new_id
+	 */
 	function Insert($config)
 	{
-		//	...
-		if(!$this->_SQL ){
-			return false;
-		}
-
-		//	...
-		$query = $this->_SQL->Insert($config, $this);
-
-		//	...
-		return $this->Query($query, __FUNCTION__);
+		return $this->SQL($config, __FUNCTION__);
 	}
 
+	/** Update record at conditions.
+	 *
+	 * <pre>
+	 * //	Configuration.
+	 * $config = [];
+	 * $config['table'] = 't_table';
+	 * $config['limit'] = 1;
+	 * $config['where']['id']  = $id;
+	 * $config['set']['value'] = $value;
+	 *
+	 * //	Execute.
+	 * $record = $db->Update($config);
+	 * </pre>
+	 *
+	 * @see		\IF_DATABASE::Update()
+	 * @param	 array		 $config
+	 * @return	 integer	 $number
+	 */
 	function Update($config)
 	{
-		//	...
-		if(!$this->_SQL ){
-			return false;
-		}
-
-		//	...
-		$query = $this->_SQL->Update($config, $this);
-
-		//	...
-		return $this->Query($query, __FUNCTION__);
+		return $this->SQL($config, __FUNCTION__);
 	}
 
+	/** Delete record at conditions.
+	 *
+	 * <pre>
+	 * //	Configuration.
+	 * $config = [];
+	 * $config['table'] = 't_table';
+	 * $config['limit'] = 1;
+	 * $config['where']['id']  = $id;
+	 *
+	 * //	Execute.
+	 * $record = $db->Delete($config);
+	 * </pre>
+	 *
+	 * @see		\IF_DATABASE::Delete()
+	 * @param	 array		 $config
+	 * @return	 integer	 $number
+	 */
 	function Delete($config)
 	{
-		//	...
-		if(!$this->_SQL ){
-			return false;
-		}
-
-		//	...
-		$query = $this->_SQL->Delete($config, $this);
-
-		//	...
-		return $this->Query($query, __FUNCTION__);
+		return $this->SQL($config, __FUNCTION__);
 	}
 
+	/** Do QQL.
+	 *
+	 * @see		\IF_DATABASE::Quick()
+	 * @param	 string		 $qql
+	 * @param	 array		 $options
+	 * @return	 array		 $record
+	 */
 	function Quick($qql, $options=[])
 	{
 		include_once(__DIR__.'/QQL.class.php');
 		return Database\QQL::Execute($qql, $options, $this);
 	}
 
+	/** Do Quote by each product.
+	 *
+	 * @see		\IF_DATABASE::Quote()
+	 * @param	 string		$value
+	 * @return	 string		$value
+	 */
 	function Quote($value)
 	{
 		//	...
@@ -295,10 +338,10 @@ class Database implements \IF_DATABASE
 
 	/** Execute SQL statement.
 	 *
-	 * @see    IF_DATABASE::Query()
-	 * @param  string $query
-	 * @param  string $type
-	 * @return array  $record
+	 * @see		\IF_DATABASE::Query()
+	 * @param	 string		 $query
+	 * @param	 string		 $type
+	 * @return	 array		 $record
 	 */
 	function Query($query, $type=null)
 	{
