@@ -114,8 +114,8 @@ class Database implements \IF_DATABASE
 
 	/** Return connection configuration.
 	 *
-	 * @see    IF_DATABASE::Config()
-	 * @return array $config
+	 * @see		\IF_DATABASE::Config()
+	 * @return	 array		 $config
 	 */
 	function Config()
 	{
@@ -124,19 +124,50 @@ class Database implements \IF_DATABASE
 
 	/** Connect database server.
 	 *
-	 * @param  array   $config
-	 * @return boolean $io
+	 * <pre>
+	 * //	Configuration.
+	 * $config = [];
+	 * $conifg['prod']     = 'mysql';
+	 * $conifg['host']     = 'localhost';
+	 * $conifg['port']     = '3306';
+	 * $conifg['user']     = 'username';
+	 * $conifg['password'] = 'password';
+	 * $conifg['charset']  = 'utf8';
+	 *
+	 * //	Execute.
+	 * $io = $db->Connect($config);
+	 * </pre>
+	 *
+	 * @param	 array		 $config
+	 * @return	 boolean	 $io
 	 */
 	function Connect($config)
 	{
 		//	...
-		foreach( ['driver','prod','host','port','user','password','database'] as $key ){
-			$this->_config[$key] = ${$key} = ifset($config[$key]);
+		if( empty($config['prod']) ){
+			//	...
+			if( isset($config['driver']) ){
+				$config['prod'] = $config['driver'];
+			}
+			//	...
+			if( isset($config['scheme']) ){
+				$config['prod'] = $config['scheme'];
+			}
 		}
 
 		//	...
-		if(!$prod ){
-			$this->_config['prod'] = $prod = $driver;
+		if( empty($config['password']) and isset($config['pass']) ){
+			$config['password'] = $config['pass'];
+		}
+
+		//	...
+		if( empty($config['charset']) ){
+			$config['charset'] = 'utf8';
+		}
+
+		//	...
+		foreach( ['prod','host','port','user','password','database','charset'] as $key ){
+			$this->_config[$key] = ${$key} = ifset($config[$key]);
 		}
 
 		//	...
@@ -157,8 +188,12 @@ class Database implements \IF_DATABASE
 
 		//	...
 		try{
+			//	...
+			$options = $this->_Options();
+
+			//	...
 			$this->_queries[] = $dsn;
-			$this->_PDO = new \PDO($dsn, $user, $password);
+			$this->_PDO = new \PDO($dsn, $user, $password, $options);
 		}catch( \Throwable $e ){
 			\Notice::Set($e->getMessage() . " ($dsn, $user, $password)");
 		}
