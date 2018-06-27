@@ -202,6 +202,28 @@ class Database implements \IF_DATABASE
 		return $this->_PDO ? true: false;
 	}
 
+	/** Set/Get last time used database name.
+	 *
+	 * @param  string $database
+	 * @return string $database
+	 */
+	function Database(string $database=null)
+	{
+		if( $database ){
+			//	...
+			$this->_config['database'] = $database;
+
+			//	...
+			$database = $this->Quote($database);
+
+			//	...
+			$this->Query("use $database ", 'not');
+		}
+
+		//	...
+		return $this->_config['database'];
+	}
+
 	/** Count number of record at conditions.
 	 *
 	 * @see		\IF_DATABASE::Count()
