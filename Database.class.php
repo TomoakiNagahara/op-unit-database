@@ -224,6 +224,26 @@ class Database implements \IF_DATABASE
 		return $this->_config['database'];
 	}
 
+	/** Do SQL.
+	 *
+	 * @param	 array		 $config
+	 * @param	 string		 $function
+	 * @return	 mixed		 $result
+	 */
+	function SQL($config, $function)
+	{
+		//	...
+		if(!$this->_SQL ){
+			return false;
+		}
+
+		//	...
+		$query = $this->_SQL->{$function}($config, $this);
+
+		//	...
+		return $this->Query($query, $function);
+	}
+
 	/** Count number of record at conditions.
 	 *
 	 * @see		\IF_DATABASE::Count()
