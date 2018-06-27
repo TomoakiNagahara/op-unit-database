@@ -458,6 +458,9 @@ class Database implements \IF_DATABASE
 				$result = array_shift($statement->fetchAll(\PDO::FETCH_ASSOC)[0]);
 				break;
 
+			case 'not':
+				break;
+
 			default:
 				\Notice::Set("Has not been support this type. ($type)", debug_backtrace(false));
 		}
@@ -468,8 +471,8 @@ class Database implements \IF_DATABASE
 
 	/** Get past stacked queries.
 	 *
-	 * @see    IF_DATABASE::Queries()
-	 * @return array $queries
+	 * @see		\IF_DATABASE::Queries()
+	 * @return	 array		 $queries
 	 */
 	function Queries()
 	{
