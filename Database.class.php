@@ -94,6 +94,15 @@ class Database implements \IF_DATABASE
 		return $options;
 	}
 
+	/** If is connect.
+	 *
+	 * @return	 boolean
+	 */
+	function isConnect()
+	{
+		return $this->_PDO ? true: false;
+	}
+
 	/** Return instantiated PDO instance. (So-called singleton)
 	 *
 	 * @return \PDO
