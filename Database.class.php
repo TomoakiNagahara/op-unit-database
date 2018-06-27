@@ -62,15 +62,6 @@ class Database implements \IF_DATABASE
 		$this->_SQL = \Unit::Instance('SQL');
 	}
 
-	/** Wrapper method.
-	 *
-	 * @return \PDO
-	 */
-	function GetPDO()
-	{
-		return $this->PDO();
-	}
-
 	/** Return instantiated PDO instance. (So-called singleton)
 	 *
 	 * @return \PDO
