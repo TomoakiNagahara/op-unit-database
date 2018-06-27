@@ -62,6 +62,38 @@ class Database implements \IF_DATABASE
 		$this->_SQL = \Unit::Instance('SQL');
 	}
 
+	/** Generate PDO options.
+	 *
+	 * @return	 array	 $options
+	 */
+	private function _Options()
+	{
+		//	...
+		$options = [];
+
+		//	...
+		switch( $prod = strtolower($this->_config['prod']) ){
+			case 'mysql':
+				//	...
+				if(!defined('\PDO::MYSQL_ATTR_INIT_COMMAND') ){
+					throw new \Exception("Please install MySQL driver for PHP.");
+				}
+
+				//	Character set. (指定字符代码, 指定字符代碼)
+				$options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES ".$this->_config['charset'];
+
+				//	Multi statement. (多个指令, 多個指令)
+				$options[\PDO::MYSQL_ATTR_MULTI_STATEMENTS] = false;
+
+				//	Persistent connect. (持续连接, 持續連接)
+				$options[\PDO::ATTR_PERSISTENT] = false;
+			break;
+		}
+
+		//	...
+		return $options;
+	}
+
 	/** Return instantiated PDO instance. (So-called singleton)
 	 *
 	 * @return \PDO
