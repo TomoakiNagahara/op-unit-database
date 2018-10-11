@@ -457,7 +457,9 @@ class Database implements \IF_DATABASE
 				break;
 
 			case 'insert':
-				$result = $this->_PDO->lastInsertId(/* $name is necessary at PGSQL */);
+				if(!$result = $this->_PDO->lastInsertId(/* $name is necessary at PGSQL */) ){
+					$result = true;
+				}
 				break;
 
 			case 'update':
