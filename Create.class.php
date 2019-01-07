@@ -1,8 +1,8 @@
 <?php
 /**
- * unit-database:/ErrorInfo.class.php
+ * unit-database:/Create.class.php
  *
- * @creation  2018-05-08
+ * @creation  2018-12-19
  * @version   1.0
  * @package   unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
@@ -11,35 +11,59 @@
 
 /** namespace
  *
- * @creation  2018-05-08
+ * @creation  2018-12-19
  */
 namespace OP\UNIT\DATABASE;
 
 /** Database
  *
- * @creation  2018-05-08
+ * @creation  2018-12-19
  * @version   1.0
  * @package   unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
-class ErrorInfo
+class Create
 {
 	/** trait
 	 *
 	 */
 	use \OP_CORE;
 
-	/** Set PDO error information.
-	 *
-	 * @param array $errorinfo
-	 * @param array $backtrace
-	 */
-	static function Set($errorinfo, $backtrace)
+	function SQL()
 	{
-		$state = $errorinfo[0];
-		$errno = $errorinfo[1];
-		$error = $errorinfo[2];
-		\Notice::Set("[$state($errno)] $error", $backtrace);
+
+	}
+
+	/**
+	 *
+	 * @param  array       $config
+	 * @param \IF_DATABASE $DB
+	 */
+	function User($config, $DB)
+	{
+		//	...
+		$sql = \OP\UNIT\SQL\User::Create($config, $DB);
+
+		//	...
+		$result = $DB->Query($sql, 'create');
+
+
+		D($sql, $result);
+	}
+
+	function Database()
+	{
+
+	}
+
+	function Table()
+	{
+
+	}
+
+	function Grant()
+	{
+
 	}
 }

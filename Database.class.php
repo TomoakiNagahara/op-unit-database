@@ -62,6 +62,44 @@ class Database implements \IF_DATABASE
 		$this->_SQL = \Unit::Instance('SQL');
 	}
 
+	/** Generate Data Source Name.
+	 *
+	 * @return string
+	 */
+	private function _DSN()
+	{
+		//	...
+		$dsn = null;
+
+		//	...
+		switch( $prod = strtolower($this->_config['prod']) ){
+			case 'mysql':
+			case 'pgsql':
+				//	...
+				$host = $this->_config['host'];
+				$dsn  = "{$prod}:host={$host}";
+
+				//	...
+				if( $port = $this->_config['port'] ?? null ){
+					$dsn .= ";port={$port}";
+				};
+
+				//	Database
+				if( $database = $this->_config['database'] ?? null ){
+					$dsn .= ";dbname={$database}";
+				}
+			break;
+			case 'sqlite':
+				$dsn = "{$prod}:{$this->_config['path']}";
+			break;
+			default:
+			\Notice::Set("Has not been support this product yet. ($prod)");
+		}
+
+		//	...
+		return $dsn;
+	}
+
 	/** Generate PDO options.
 	 *
 	 * @return	 array	 $options
@@ -72,15 +110,10 @@ class Database implements \IF_DATABASE
 		$options = [];
 
 		//	...
-		switch( $prod = strtolower($this->_config['prod']) ){
+		switch( strtolower($this->_config['prod']) ){
 			case 'mysql':
-				//	...
-				if(!defined('\PDO::MYSQL_ATTR_INIT_COMMAND') ){
-					throw new \Exception("Please install MySQL driver for PHP.");
-				}
-
 				//	Character set. (指定字符代码, 指定字符代碼)
-				$options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES ".$this->_config['charset'];
+				$options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES ".($this->_config['charset'] ?? 'utf8');
 
 				//	Multi statement. (多个指令, 多個指令)
 				$options[\PDO::MYSQL_ATTR_MULTI_STATEMENTS] = false;
@@ -125,7 +158,7 @@ class Database implements \IF_DATABASE
 	/** Connect database server.
 	 *
 	 * <pre>
-	 * //	Configuration.
+	 * //  MySQL Configuration.
 	 * $config = [];
 	 * $conifg['prod']     = 'mysql';
 	 * $conifg['host']     = 'localhost';
@@ -134,8 +167,10 @@ class Database implements \IF_DATABASE
 	 * $conifg['password'] = 'password';
 	 * $conifg['charset']  = 'utf8';
 	 *
-	 * //	Execute.
-	 * $io = $db->Connect($config);
+	 * //  SQLite Configuration.
+	 * $config = [];
+	 * $conifg['prod']     = 'sqlite';
+	 * $conifg['path']     = ':memory:';
 	 * </pre>
 	 *
 	 * @param	 array		 $config
@@ -144,62 +179,157 @@ class Database implements \IF_DATABASE
 	function Connect($config)
 	{
 		//	...
-		if( empty($config['prod']) ){
+		if( isset($this->_config['driver']) and empty($this->_config['prod']) ){
+			$this->_config['prod'] = $this->_config['driver'];
+			unset($this->_config['driver']);
+		};
+
+		//	...
+		$this->_config = $config;
+
+		//	...
+		switch( $prod = strtolower($config['prod']) ){
+			case 'mysql':
+				$this->_ConnectMySQL();
+				break;
+			case 'pgsql':
+				$this->_ConnectPGSQL();
+				break;
+			case 'sqlite':
+				$this->_ConnectSQLite();
+				break;
+			default:
+				\Notice::Set("Has not been support this product. ($prod)");
+		};
+
+		//	...
+		return $this->_PDO ? true: false;
+	}
+
+	/** Connect MySQL Database server.
+	 *
+	 */
+	function _ConnectMySQL()
+	{
+		try {
 			//	...
-			if( isset($config['driver']) ){
-				$config['prod'] = $config['driver'];
+			if(!defined('\PDO::MYSQL_ATTR_INIT_COMMAND') ){
+				throw new \Exception("Please install MySQL driver for PHP PDO.");
 			}
+
 			//	...
-			if( isset($config['scheme']) ){
-				$config['prod'] = $config['scheme'];
-			}
-		}
+			$user     = $this->_config['user']     ?? null;
+			$password = $this->_config['password'] ?? null;
 
-		//	...
-		if( empty($config['password']) and isset($config['pass']) ){
-			$config['password'] = $config['pass'];
-		}
-
-		//	...
-		if( empty($config['charset']) ){
-			$config['charset'] = 'utf8';
-		}
-
-		//	...
-		foreach( ['prod','host','port','user','password','database','charset'] as $key ){
-			$this->_config[$key] = ${$key} = ifset($config[$key]);
-		}
-
-		//	...
-		foreach( ['prod','host','user','password'] as $key ){
-			if( empty(${$key}) ){
-				\Notice::Set("This value has not been set. ($key)");
-				return false;
-			}
-		}
-
-		//	Data Source Name
-		$dsn = "{$prod}:host={$host}";
-
-		//	Database
-		if( $database ){
-			$dsn .= ";dbname={$database}";
-		}
-
-		//	...
-		try{
 			//	...
+			$dsn     = $this->_DSN();
 			$options = $this->_Options();
 
 			//	...
 			$this->_queries[] = $dsn;
 			$this->_PDO = new \PDO($dsn, $user, $password, $options);
-		}catch( \Throwable $e ){
-			\Notice::Set($e->getMessage() . " ($dsn, $user, $password)");
-		}
+		}catch( \PDOException $e ){
+			switch( $e->getCode() ){
+				case '2002':
+					$key = 'pdo_mysql.default_socket';
+					$ini = ini_get($key);
+					$str = $e->getMessage();
+					if( $ini ){
+						\Notice::Set("{$str} ({$ini})");
+					}else{
+						\Notice::Set("Has not been set '{$key}'.");
+					};
+					break;
+				default:
+					\Notice::Set($e);
+			};
+		}catch( \Exception $e ){
+			\Notice::Set($e);
+		};
+	}
+
+	/** Connect MySQL Database server.
+	 *
+	 */
+	function _ConnectPGSQL()
+	{
+		//	...
+		if( isset($this->_config['role']) and empty($this->_config['user']) ){
+			$this->_config['user'] = $this->_config['role'];
+			unset($this->_config['role']);
+		};
 
 		//	...
-		return $this->_PDO ? true: false;
+		try {
+			//	...
+			if(!defined('\PDO::PGSQL_ATTR_DISABLE_PREPARES') ){
+				throw new \Exception("Please install PostgreSQL driver for PHP PDO.");
+			}
+
+			//	...
+			$user     = $this->_config['user']     ?? null;
+			$password = $this->_config['password'] ?? null;
+
+			//	...
+			$dsn     = $this->_DSN();
+			$options = $this->_Options();
+
+			//	...
+			$this->_queries[] = $dsn;
+			$this->_PDO = new \PDO($dsn, $user, $password, $options);
+		}catch( \PDOException $e ){
+			switch( $e->getCode() ){
+				default:
+					\Notice::Set($e);
+			};
+		}catch( \Exception $e ){
+			\Notice::Set($e);
+		};
+	}
+
+	/** Connect SQLite Database server.
+	 *
+	 */
+	function _ConnectSQLite()
+	{
+		try {
+			//	...
+			$dsn     = $this->_DSN();
+
+			//	...
+			$this->_queries[] = $dsn;
+			$this->_PDO = new \PDO($dsn);
+		}catch( \PDOException $e ){
+			switch( $e->getCode() ){
+				case 0:
+					$module = 'sqlite';
+					\Notice::Set("php-{$module} is not installed.");
+					include( ConvertPath('asset:/bootstrap/php/content.phtml') );
+					break;
+				default:
+					\Notice::Set($e);
+			};
+		}catch( \Exception $e ){
+			\Notice::Set($e);
+		};
+	}
+
+	/**
+	 *
+	 * @return \OP\UNIT\DATABASE\Create
+	 */
+	function Create()
+	{
+		//	...
+		static $_create;
+		//	...
+		if(!$_create ){
+			include('Create.class.php');
+			$_create = new \OP\UNIT\DATABASE\Create();
+		};
+
+		//	...
+		return $_create;
 	}
 
 	/** Set/Get last time used database name.
@@ -506,7 +636,7 @@ class Database implements \IF_DATABASE
 
 	/** Display debug information.
 	 *
-	 * @see IF_DATABASE::Debug()
+	 * @see \IF_DATABASE::Debug()
 	 */
 	function Debug()
 	{
