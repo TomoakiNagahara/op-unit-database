@@ -366,14 +366,25 @@ class Database implements \IF_DATABASE
 		return $l.trim($value).$r;
 	}
 
-	/** Execute SQL statement.
+	/** SQL is execute.
 	 *
-	 * @see		\IF_DATABASE::Query()
+	 * @see		\IF_DATABASE::SQL()
 	 * @param	 string		 $query
 	 * @param	 string		 $type
 	 * @return	 array		 $record
 	 */
-	function Query($query, $type=null)
+	function SQL(string $sql, string $type)
+	{
+		return $this->Query($sql, $type);
+	}
+
+	/** Execute SQL statement.
+	 *
+	 * @param	 string		 $query
+	 * @param	 string		 $type
+	 * @return	 array		 $record
+	 */
+	function Query(string $query, string $type='')
 	{
 		//	...
 		if(!$query){
