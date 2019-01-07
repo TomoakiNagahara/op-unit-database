@@ -128,6 +128,25 @@ class Database implements \IF_DATABASE
 		return $this->_PDO ? true: false;
 	}
 
+	/** Create
+	 *
+	 * @return \OP\UNIT\DATABASE\Create
+	 */
+	function Create()
+	{
+		//	...
+		static $_create;
+
+		//	...
+		if(!$_create ){
+			include('Create.class.php');
+			$_create = new \OP\UNIT\DATABASE\Create();
+		};
+
+		//	...
+		return $_create;
+	}
+
 	/** Set/Get last time used database name.
 	 *
 	 * @param  string $database
