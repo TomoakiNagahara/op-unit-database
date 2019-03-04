@@ -15,6 +15,13 @@
  */
 namespace OP\UNIT\DATABASE;
 
+/** Used class
+ *
+ * @creation  2019-03-04
+ */
+use OP\OP_CORE;
+use OP\IF_DATABASE;
+
 /** QQL
  *
  * @created   2017-01-24
@@ -28,7 +35,7 @@ class QQL
 	/** trait
 	 *
 	 */
-	use \OP_CORE;
+	use OP_CORE;
 
 	/** Parse option.
 	 *
@@ -143,7 +150,7 @@ class QQL
 	 *
 	 * @param   string      $qql
 	 * @param   string      $opt
-	 * @param  \IF_DATABASE $_db
+	 * @param   IF_DATABASE $_db
 	 * @return  array       $sql
 	 */
 	static function Parse($qql, $opt, $_db)
@@ -254,7 +261,7 @@ class QQL
 	/** Execute Select.
 	 *
 	 * @param   array       $select
-	 * @param  \IF_DATABASE $_db
+	 * @param   IF_DATABASE $_db
 	 * @return  array       $record
 	 */
 	static function Select($select, $_db)
@@ -298,7 +305,7 @@ class QQL
 	 *
 	 * @param   string       $qql
 	 * @param   string|array $opt
-	 * @param  \IF_DATABASE  $DB
+	 * @param   IF_DATABASE  $DB
 	 * @return  array        $record
 	 */
 	static function Execute($qql, $opt, $DB)

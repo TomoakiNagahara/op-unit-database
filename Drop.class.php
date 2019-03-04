@@ -15,6 +15,14 @@
  */
 namespace OP\UNIT\DATABASE;
 
+/** Used class
+ *
+ * @creation  2019-03-04
+ */
+use OP\OP_CORE;
+use OP\IF_DATABASE;
+use OP\Notice;
+
 /** Drop
  *
  * @creation  2019-01-07
@@ -28,17 +36,17 @@ class Drop
 	/** trait
 	 *
 	 */
-	use \OP_CORE;
+	use OP_CORE;
 
 	/** Database object.
 	 *
-	 * @var \IF_DATABASE
+	 * @var IF_DATABASE
 	 */
 	private $_DB;
 
 	/** Construct
 	 *
-	 * @param \IF_DATABASE $DB
+	 * @param IF_DATABASE $DB
 	 */
 	function __construct($DB)
 	{

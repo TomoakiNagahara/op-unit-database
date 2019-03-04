@@ -15,6 +15,13 @@
  */
 namespace OP\UNIT\DATABASE;
 
+/** Used class
+ *
+ * @creation  2019-03-04
+ */
+use OP\OP_CORE;
+use OP\Notice;
+
 /** MYSQL
  *
  * @creation  2019-01-07
@@ -28,7 +35,7 @@ class MYSQL
 	/** trait
 	 *
 	 */
-	use \OP_CORE;
+	use OP_CORE;
 
 	/** Config
 	 *
@@ -137,7 +144,7 @@ class MYSQL
 			$option   = self::Option($config);
 			$user     = $config['user']     ?? null;
 			$password = $config['password'] ?? null;
-			$database = $config['database'] ?? null;
+		//	$database = $config['database'] ?? null;
 
 			//	...
 			return new \PDO($dsn, $user, $password, $option);
@@ -146,7 +153,7 @@ class MYSQL
 			require_once(__DIR__.'/SQL_PHP_PDO_Error.class.php');
 			SQL_PHP_PDO_Error::Auto('mysql', $e);
 		}catch( \Exception $e ){
-			\Notice::Set($e->getMessage() . " ($dsn, $user, $password)");
+			Notice::Set($e->getMessage() . " ($dsn, $user, $password)");
 		};
 	}
 
@@ -165,7 +172,7 @@ class MYSQL
 				$preg = "GRANT (.+) ON (.+)\.(.+) TO '(.+)'@'(.+)'";
 				$m    = null;
 				if(!preg_match("/$preg/i", $sql, $m) ){
-					\Notice::Set("Unmatch: {$preg} → {$sql}");
+					Notice::Set("Unmatch: {$preg} → {$sql}");
 				};
 
 				//	...

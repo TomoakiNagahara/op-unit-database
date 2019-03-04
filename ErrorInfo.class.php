@@ -15,6 +15,13 @@
  */
 namespace OP\UNIT\DATABASE;
 
+/** Used class
+ *
+ * @creation  2019-03-04
+ */
+use OP\OP_CORE;
+use OP\Notice;
+
 /** Database
  *
  * @creation  2018-05-08
@@ -28,7 +35,7 @@ class ErrorInfo
 	/** trait
 	 *
 	 */
-	use \OP_CORE;
+	use OP_CORE;
 
 	/** Set PDO error information.
 	 *
@@ -40,6 +47,6 @@ class ErrorInfo
 		$state = $errorinfo[0];
 		$errno = $errorinfo[1];
 		$error = $errorinfo[2];
-		\Notice::Set("[$state($errno)] $error", $backtrace);
+		Notice::Set("[$state($errno)] $error", $backtrace);
 	}
 }

@@ -15,6 +15,12 @@
  */
 namespace OP\UNIT\DATABASE;
 
+/** Used class
+ *
+ * @creation  2019-03-04
+ */
+use OP\OP_CORE;
+
 /** Show
  *
  * @created   2018-04-14
@@ -28,7 +34,7 @@ class Show
 	/** trait
 	 *
 	 */
-	use \OP_CORE;
+	use OP_CORE;
 
 	/** Get show result.
 	 *

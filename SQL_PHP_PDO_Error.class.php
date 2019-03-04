@@ -15,6 +15,13 @@
  */
 namespace OP\UNIT\DATABASE;
 
+/** Used class
+ *
+ * @creation  2019-03-04
+ */
+use OP\OP_CORE;
+use OP\Notice;
+
 /** SQL_PHP_PDO_Error
  *
  * @creation  2019-01-09
@@ -28,7 +35,7 @@ class SQL_PHP_PDO_Error
 	/** trait
 	 *
 	 */
-	use \OP_CORE;
+	use OP_CORE;
 
 	/** PHP PDO Error
 	 *
@@ -42,7 +49,7 @@ class SQL_PHP_PDO_Error
 			//	SQLite
 			case 0:
 				$module = 'sqlite';
-				\Notice::Set("php-{$module} is not installed.");
+				Notice::Set("php-{$module} is not installed.");
 				include( ConvertPath('asset:/bootstrap/php/content.phtml') );
 				break;
 
@@ -52,14 +59,14 @@ class SQL_PHP_PDO_Error
 				$ini = ini_get($key);
 				$str = $e->getMessage();
 				if( $ini ){
-					\Notice::Set("{$str} ({$ini})");
+					Notice::Set("{$str} ({$ini})");
 				}else{
-					\Notice::Set("Has not been set '{$key}'.");
+					Notice::Set("Has not been set '{$key}'.");
 				};
 				break;
 
 			default:
-				\Notice::Set($e);
+				Notice::Set($e);
 		};
 	}
 }
