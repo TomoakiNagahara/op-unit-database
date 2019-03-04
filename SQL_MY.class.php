@@ -65,6 +65,19 @@ class MYSQL
 		//	...
 		$prod = $config['prod'];
 
+		/** Connect to an ODBC database using driver invocation
+		 *
+		 * @see http://php.net/manual/en/pdo.construct.php
+		 */
+		if( $uri = $config['uri'] ?? null ){
+			/*
+			if(!file_exists($uri) ){
+				throw new \Exception("File has not been exists. ($uri)");
+			};
+			*/
+			return "uri:file://{$uri}";
+		};
+
 		//	...
 		if(!$host = $config['host'] ?? null ){
 			throw new \Exception("Has not been set host.");
@@ -121,30 +134,64 @@ class MYSQL
 		try{
 			//	...
 			$dsn      = self::DSN($config);
-			$option  = self::Option($config);
-			$user     = $config['user'];
-			$password = $config['password'];
+			$option   = self::Option($config);
+			$user     = $config['user']     ?? null;
+			$password = $config['password'] ?? null;
+			$database = $config['database'] ?? null;
 
 			//	...
 			return new \PDO($dsn, $user, $password, $option);
 
 		}catch( \PDOException $e ){
-			switch( $e->getCode() ){
-				case '2002':
-					$key = 'pdo_mysql.default_socket';
-					$ini = ini_get($key);
-					$str = $e->getMessage();
-					if( $ini ){
-						\Notice::Set("{$str} ({$ini})");
-					}else{
-						\Notice::Set("Has not been set '{$key}'.");
-					};
-					break;
-				default:
-					\Notice::Set($e);
-			};
+			require_once(__DIR__.'/SQL_PHP_PDO_Error.class.php');
+			SQL_PHP_PDO_Error::Auto('mysql', $e);
 		}catch( \Exception $e ){
 			\Notice::Set($e->getMessage() . " ($dsn, $user, $password)");
 		};
+	}
+
+	/** Parse grant
+	 *
+	 */
+	static function Grant($records)
+	{
+		//	...
+		$result = [];
+
+		//	...
+		foreach( $records as $record ){
+			foreach( $record as $sql ){
+			//	$preg = "GRANT (.+) ON (.+)\.(.+) TO '(.+)'@'(.+)' IDENTIFIED BY PASSWORD '(.+)'";
+				$preg = "GRANT (.+) ON (.+)\.(.+) TO '(.+)'@'(.+)'";
+				$m    = null;
+				if(!preg_match("/$preg/i", $sql, $m) ){
+					\Notice::Set("Unmatch: {$preg} → {$sql}");
+				};
+
+				//	...
+				$privileges = $m[1];
+				$database   = $m[2];
+				$table      = $m[3];
+				/*
+				$user       = $m[4];
+				$host       = $m[5];
+				$password   = $m[6];
+				*/
+
+				//	...
+				$database   = trim($database, '`');
+				$table      = trim($table   , '`');
+
+				//	...
+				foreach( explode(',', $privileges.',') as $privilege ){
+					if( $privilege ){
+						$result[$database][$table][] = trim($privilege);
+					};
+				};
+			};
+		};
+
+		//	...
+		return $result;
 	}
 }
