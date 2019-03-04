@@ -15,6 +15,13 @@
  */
 namespace OP\UNIT\DATABASE;
 
+/** Used class
+ *
+ * @creation  2019-03-04
+ */
+use OP\OP_CORE;
+use OP\Notice;
+
 /** PGSQL
  *
  * @creation  2019-01-07
@@ -28,7 +35,7 @@ class PGSQL
 	/** trait
 	 *
 	 */
-	use \OP_CORE;
+	use OP_CORE;
 
 	/** Config
 	 *
@@ -111,7 +118,7 @@ class PGSQL
 			require_once(__DIR__.'/SQL_PHP_PDO_Error.class.php');
 			SQL_PHP_PDO_Error::Auto('mysql', $e);
 		}catch( \Exception $e ){
-			\Notice::Set($e->getMessage() . " ($dsn, $role, $password)");
+			Notice::Set($e->getMessage() . " ($dsn, $role, $password)");
 		};
 	}
 }

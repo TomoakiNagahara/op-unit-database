@@ -15,6 +15,12 @@
  */
 namespace OP\UNIT;
 
+/** Used class
+ *
+ */
+use \OP\Notice;
+use \OP\IF_DATABASE;
+
 /** Database
  *
  * @creation  2018-04-20
@@ -23,12 +29,12 @@ namespace OP\UNIT;
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
-class Database implements \IF_DATABASE, \IF_UNIT
+class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 {
 	/** trait
 	 *
 	 */
-	use \OP_CORE;
+	use \OP\OP_CORE, \OP\OP_UNIT;
 
 	/** Connection configuration.
 	 *
@@ -59,7 +65,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 	 */
 	function __construct()
 	{
-		$this->_SQL = \Unit::Instance('SQL');
+	//	$this->_SQL = $this->Unit('SQL');
 	}
 
 	/** If is connect.
@@ -82,7 +88,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** Return connection configuration.
 	 *
-	 * @see		\IF_DATABASE::Config()
+	 * @see		 IF_DATABASE::Config()
 	 * @return	 array		 $config
 	 */
 	function Config()
@@ -124,7 +130,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 				if( empty($prod) ){
 					$prod = 'empty';
 				};
-				\Notice::Set("Has not been support this product. ($prod)");
+				Notice::Set("Has not been support this product. ($prod)");
 		};
 
 		//	...
@@ -206,7 +212,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** Count number of record at conditions.
 	 *
-	 * @see		\IF_DATABASE::Count()
+	 * @see		 IF_DATABASE::Count()
 	 * @param	 array		 $config
 	 * @return	 integer	 $count
 	 */
@@ -229,7 +235,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 	 * $record = $db->Select($config);
 	 * </pre>
 	 *
-	 * @see		\IF_DATABASE::Select()
+	 * @see		 IF_DATABASE::Select()
 	 * @param	 array		 $config
 	 * @return	 array		 $record
 	 */
@@ -250,7 +256,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 	 * $new_id = $db->Insert($config);
 	 * </pre>
 	 *
-	 * @see		\IF_DATABASE::Insert()
+	 * @see		 IF_DATABASE::Insert()
 	 * @param	 array		 $config
 	 * @return	 integer	 $new_id
 	 */
@@ -273,7 +279,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 	 * $record = $db->Update($config);
 	 * </pre>
 	 *
-	 * @see		\IF_DATABASE::Update()
+	 * @see		 IF_DATABASE::Update()
 	 * @param	 array		 $config
 	 * @return	 integer	 $number
 	 */
@@ -295,7 +301,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 	 * $record = $db->Delete($config);
 	 * </pre>
 	 *
-	 * @see		\IF_DATABASE::Delete()
+	 * @see		 IF_DATABASE::Delete()
 	 * @param	 array		 $config
 	 * @return	 integer	 $number
 	 */
@@ -333,7 +339,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** Do QQL.
 	 *
-	 * @see		\IF_DATABASE::QQL()
+	 * @see		 IF_DATABASE::QQL()
 	 * @param	 string		 $qql
 	 * @param	 array		 $options
 	 * @return	 array		 $record
@@ -346,7 +352,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** Do QQL.
 	 *
-	 * @see		\IF_DATABASE::QQL()
+	 * @see		 IF_DATABASE::QQL()
 	 * @param	 string		 $qql
 	 * @param	 array		 $options
 	 * @return	 array		 $record
@@ -358,7 +364,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** Do Quote by each product.
 	 *
-	 * @see		\IF_DATABASE::Quote()
+	 * @see		 IF_DATABASE::Quote()
 	 * @param	 string		$value
 	 * @return	 string		$value
 	 */
@@ -387,7 +393,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** SQL is execute.
 	 *
-	 * @see		\IF_DATABASE::SQL()
+	 * @see		 IF_DATABASE::SQL()
 	 * @param	 string		 $query
 	 * @param	 string		 $type
 	 * @return	 array		 $record
@@ -415,7 +421,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 		//	Check of PDO instantiate.
 		if(!$this->_PDO ){
-			\Notice::Set("Has not been instantiate PDO.", debug_backtrace(false));
+			Notice::Set("Has not been instantiate PDO.", debug_backtrace(false));
 			return ($type === 'select') ? []: false;
 		}
 
@@ -495,7 +501,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 				break;
 
 			default:
-				\Notice::Set("Has not been support this type. ($type)", debug_backtrace(false));
+				Notice::Set("Has not been support this type. ($type)", debug_backtrace(false));
 		}
 
 		//	...
@@ -504,7 +510,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** Begin transactoin.
 	 *
-	 * @see		\IF_DATABASE::Transaction()
+	 * @see		 IF_DATABASE::Transaction()
 	 * @see		\PDO::beginTransaction()
 	 * @return	 bool
 	 */
@@ -515,7 +521,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** Commit transactoin.
 	 *
-	 * @see		\IF_DATABASE::Commit()
+	 * @see		 IF_DATABASE::Commit()
 	 * @see		\PDO::commit()
 	 * @return	 bool
 	 */
@@ -526,7 +532,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** Rollback transactoin.
 	 *
-	 * @see		\IF_DATABASE::Rollback()
+	 * @see		 IF_DATABASE::Rollback()
 	 * @see		\PDO::rollBack()
 	 * @return	 bool
 	 */
@@ -537,7 +543,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** Display how to use.
 	 *
-	 * @see		\IF_DATABASE::Help()
+	 * @see		 IF_DATABASE::Help()
 	 */
 	function Help($topic=null)
 	{
@@ -546,7 +552,7 @@ class Database implements \IF_DATABASE, \IF_UNIT
 
 	/** Display debug information.
 	 *
-	 * @see		\IF_DATABASE::Debug()
+	 * @see		 IF_DATABASE::Debug()
 	 */
 	function Debug($config=null)
 	{

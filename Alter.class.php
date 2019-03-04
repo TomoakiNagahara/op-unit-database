@@ -14,6 +14,12 @@
  */
 namespace OP\UNIT\DATABASE;
 
+/** Used class
+ *
+ * @creation  2019-03-04
+ */
+use OP\OP_CORE;
+
 /** Database
  *
  * @creation  2019-01-18
@@ -27,7 +33,7 @@ class Alter
 	/** trait
 	 *
 	 */
-	use \OP_CORE;
+	use OP_CORE;
 
 	/** Database object.
 	 *
