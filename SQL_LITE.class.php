@@ -46,8 +46,25 @@ class SQLITE
 		//	...
 		if( $path === ':memory:' ){
 			//	OK
-		}else if(!file_exists($path) ){
-			throw new \Exception("File has not been exists. ($path)");
+		}else{
+			if( file_exists($path) ){
+				/*
+				//	Parent directory.
+				$file = basename($path);
+				$perm = substr(sprintf('%o', fileperms($file)), -4);
+				if( '0777' !== $perm ){
+
+				};
+
+				//	Database file.
+				$perm = substr(sprintf('%o', fileperms($path)), -4);
+				if( '0666' !== $perm ){
+
+				};
+				*/
+			}else{
+				throw new \Exception("Database file has not been exists. ($path)");
+			}
 		};
 
 		//	...
@@ -77,7 +94,7 @@ class SQLITE
 	 * @throws	\Exception	 $e
 	 * @return	\PDO		 $pdo
 	 */
-	static function Connect($config)
+	static function Connect(array $config)
 	{
 		//	...
 		try{
@@ -88,17 +105,31 @@ class SQLITE
 			return new \PDO($dsn);
 
 		}catch( \PDOException $e ){
-			switch( $e->getCode() ){
-				case 0:
-					$module = 'sqlite';
-					\Notice::Set("php-{$module} is not installed.");
-					include( ConvertPath('asset:/bootstrap/php/content.phtml') );
-					break;
-				default:
-					\Notice::Set($e);
-			};
+			require_once(__DIR__.'/SQL_PHP_PDO_Error.class.php');
+			SQL_PHP_PDO_Error::Auto('mysql', $e);
 		}catch( \Exception $e ){
 			\Notice::Set($e->getMessage() . " ($dsn)");
 		};
+	}
+
+	/** Create database
+	 *
+	 * @param	 array	 $config
+	 * @return	 boolean
+	 */
+	static function Create(array $config)
+	{
+		//	...
+		if(!$path = $config['path'] ?? null ){
+			return false;
+		};
+
+		//	...
+		if( $io = touch($path) ){
+			$io = chmod($path, 0666);
+		}
+
+		//	...
+		return $io;
 	}
 }

@@ -23,7 +23,7 @@ namespace OP\UNIT;
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
-class Database implements \IF_DATABASE
+class Database implements \IF_DATABASE, \IF_UNIT
 {
 	/** trait
 	 *
@@ -103,25 +103,28 @@ class Database implements \IF_DATABASE
 		//	...
 		switch( $prod = $config['prod'] ){
 			case 'mysql':
-				include(__DIR__.'/SQL_MY.class.php');
+				require_once(__DIR__.'/SQL_MY.class.php');
 				$this->_config = DATABASE\MYSQL::Config($config);
 				$this->_PDO    = DATABASE\MYSQL::Connect($config);
 				break;
 
 			case 'pgsql':
-				include(__DIR__.'/SQL_PG.class.php');
+				require_once(__DIR__.'/SQL_PG.class.php');
 				$this->_config = DATABASE\PGSQL::Config($config);
 				$this->_PDO    = DATABASE\PGSQL::Connect($config);
 				break;
 
 			case 'sqlite':
-				include(__DIR__.'/SQL_LITE.class.php');
+				require_once(__DIR__.'/SQL_LITE.class.php');
 				$this->_config = DATABASE\SQLITE::Config($config);
 				$this->_PDO    = DATABASE\SQLITE::Connect($config);
 				break;
 
 			default:
-				\Notice::Set("Has not been this product. ($prod)");
+				if( empty($prod) ){
+					$prod = 'empty';
+				};
+				\Notice::Set("Has not been support this product. ($prod)");
 		};
 
 		//	...
@@ -134,17 +137,8 @@ class Database implements \IF_DATABASE
 	 */
 	function Create()
 	{
-		//	...
-		static $_create;
-
-		//	...
-		if(!$_create ){
-			include('Create.class.php');
-			$_create = new \OP\UNIT\DATABASE\Create();
-		};
-
-		//	...
-		return $_create;
+		require_once(__DIR__.'/Create.class.php');
+		return new \OP\UNIT\DATABASE\Create($this);
 	}
 
 	/** Drop
@@ -153,17 +147,18 @@ class Database implements \IF_DATABASE
 	 */
 	function Drop()
 	{
-		//	...
-		static $_drop;
+		require_once(__DIR__.'/Drop.class.php');
+		return new \OP\UNIT\DATABASE\Drop($this);
+	}
 
-		//	...
-		if(!$_drop ){
-			include('Create.class.php');
-			$_drop = new \OP\UNIT\DATABASE\Create();
-		};
-
-		//	...
-		return $_drop;
+	/** Alter
+	 *
+	 * @return \OP\UNIT\DATABASE\Alter
+	 */
+	function Alter()
+	{
+		require_once(__DIR__.'/Alter.class.php');
+		return new \OP\UNIT\DATABASE\Alter($this);
 	}
 
 	/** Set/Get last time used database name.
@@ -316,7 +311,11 @@ class Database implements \IF_DATABASE
 	 */
 	function Show($config)
 	{
-		return $this->Query($this->_SQL->Show($config, $this), 'show');
+		//	Generate SQL.
+		$sql = $this->_SQL->Show($config, $this);
+
+		//	Execute SQL.
+		return $this->SQL($sql, 'show');
 	}
 
 	/** Get field name of primary key.
@@ -334,7 +333,7 @@ class Database implements \IF_DATABASE
 
 	/** Do QQL.
 	 *
-	 * @see		\IF_DATABASE::Quick()
+	 * @see		\IF_DATABASE::QQL()
 	 * @param	 string		 $qql
 	 * @param	 array		 $options
 	 * @return	 array		 $record
@@ -343,6 +342,18 @@ class Database implements \IF_DATABASE
 	{
 		include_once(__DIR__.'/QQL.class.php');
 		return Database\QQL::Execute($qql, $options, $this);
+	}
+
+	/** Do QQL.
+	 *
+	 * @see		\IF_DATABASE::QQL()
+	 * @param	 string		 $qql
+	 * @param	 array		 $options
+	 * @return	 array		 $record
+	 */
+	function QQL($qql, $options=[])
+	{
+		return $this->Quick($qql, $options);
 	}
 
 	/** Do Quote by each product.
@@ -354,12 +365,20 @@ class Database implements \IF_DATABASE
 	function Quote($value)
 	{
 		//	...
-		switch( $this->_config['prod'] ){
+		switch( $prod = $this->_config['prod'] ){
 			case 'mysql':
 				$l = '`';
 				$r = '`';
 				break;
+
+			case 'pgsql':
+			case 'sqlite':
+				$l = '"';
+				$r = '"';
+				break;
+
 			default:
+				throw new \Exception("Has not been support this product. ($prod)");
 		}
 
 		//	...
@@ -387,14 +406,17 @@ class Database implements \IF_DATABASE
 	function Query(string $query, string $type='')
 	{
 		//	...
+		$type = strtolower($type);
+
+		//	...
 		if(!$query){
-			return $type==='Select' ? []: false;
+			return ($type === 'select') ? []: false;
 		}
 
 		//	Check of PDO instantiate.
 		if(!$this->_PDO ){
 			\Notice::Set("Has not been instantiate PDO.", debug_backtrace(false));
-			return $type==='Select' ? []: false;
+			return ($type === 'select') ? []: false;
 		}
 
 		//	Remove space.
@@ -410,26 +432,33 @@ class Database implements \IF_DATABASE
 		if(!$statement ){
 			include_once(__DIR__.'/ErrorInfo.class.php');
 			DATABASE\ErrorInfo::Set( $this->_PDO->errorInfo(), debug_backtrace(false) );
-			return [];
+			return ($type === 'select') ? []: false;
 		}
 
 		//	Check of SQL type.
 		if(!$type){
-			$type = substr($query, 0, strpos($query, ' '));
+			$type = strtolower(substr($query, 0, strpos($query, ' ')));
 		}
 
 		//	Generate result value by type.
-		switch( strtolower($type) ){
+		switch( $type ){
 			case 'select':
 				$result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 				if( strpos($query.' ', ' LIMIT 1 ') and $result ){
+					/*
+					if( count($result[0]) === 1 ){
+						foreach( $result[0] as $result ){
+							//	...
+						};
+					}
+					*/
 					$result = $result[0];
 				}
 				break;
 
 			case 'count':
 				$result = $statement->fetchAll(\PDO::FETCH_ASSOC);
-				$result = $result[0]['COUNT(*)'];
+				$result = $result[0]['COUNT(*)'] ?? null;
 				break;
 
 			case 'insert':
@@ -452,6 +481,9 @@ class Database implements \IF_DATABASE
 			case 'alter':
 			case 'grant':
 			case 'create':
+			case 'drop':
+			case 'pragma':
+			case 'trigger':
 				$result = true;
 				break;
 
@@ -470,12 +502,54 @@ class Database implements \IF_DATABASE
 		return isset($result) ? $result: [];
 	}
 
+	/** Begin transactoin.
+	 *
+	 * @see		\IF_DATABASE::Transaction()
+	 * @see		\PDO::beginTransaction()
+	 * @return	 bool
+	 */
+	function Transaction()
+	{
+		return $this->_PDO->beginTransaction();
+	}
+
+	/** Commit transactoin.
+	 *
+	 * @see		\IF_DATABASE::Commit()
+	 * @see		\PDO::commit()
+	 * @return	 bool
+	 */
+	function Commit()
+	{
+		return $this->_PDO->commit();
+	}
+
+	/** Rollback transactoin.
+	 *
+	 * @see		\IF_DATABASE::Rollback()
+	 * @see		\PDO::rollBack()
+	 * @return	 bool
+	 */
+	function Rollback()
+	{
+		return $this->_PDO->rollBack();
+	}
+
+	/** Display how to use.
+	 *
+	 * @see		\IF_DATABASE::Help()
+	 */
+	function Help($topic=null)
+	{
+		Html('$db-&gtHelp($topic) -- Topic --&gt Connect, Insert, Select, Update, Delete, SQL, QQL');
+	}
+
 	/** Display debug information.
 	 *
-	 * @see \IF_DATABASE::Debug()
+	 * @see		\IF_DATABASE::Debug()
 	 */
-	function Debug()
+	function Debug($config=null)
 	{
-		D($this->_queries);
+		D( $this->_config, $this->_queries);
 	}
 }

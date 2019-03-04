@@ -13,7 +13,7 @@
  *
  * @created   2018-05-14
  */
-namespace OP\UNIT\Database;
+namespace OP\UNIT\DATABASE;
 
 /** Show
  *
@@ -39,77 +39,236 @@ class Show
 	static function Get($records, $query)
 	{
 		//	...
-		$result = [];
-		$column = strpos($query, 'SHOW FULL COLUMNS FROM') === 0 ? true: false;
-		$index  = strpos($query, 'SHOW INDEX FROM')        === 0 ? true: false;
+		$database = strpos($query, 'SHOW DATABASES')         === 0 ? true: false;
+		$table    = strpos($query, 'SHOW TABLES')            === 0 ? true: false;
+		$index    = strpos($query, 'SHOW INDEX FROM')        === 0 ? true: false;
+		$select   = strpos($query, 'SELECT ')                === 0 ? true: false;
+		$user     = null;
+		$column   =(strpos($query, 'SHOW FULL COLUMNS FROM') === 0 or
+					strpos($query, 'PRAGMA TABLE_INFO')      === 0)? true: false;
+		$grant    = strpos($query, 'SHOW GRANTS FOR ')       === 0 ? true: false;
 
 		//	...
-		foreach( $records as $temp ){
-			if( $column ){
-				$name = $temp['Field'];
-				foreach( $temp as $key => $val ){
-					//	...
-					if( $key === 'Collation' or $key === 'Default' ){
-						if( $val === null ){
-							continue;
-						}
-					}
-
-					//	...
-					$key = lcfirst($key);
-
-					//	...
-					if( $key === 'type' ){
-						//	Parse --> type unsigned --> type, unsigned
-						if( $pos = strpos($val, 'unsigned') ){
-							$val = substr($val, 0, $pos-1);
-							$result[$name]['unsigned'] = true;
-						}
-
-						//	Parse --> type(length) --> type, length
-						if( $st = strpos($val, '(') and $en = strpos($val, ')') ){
-							$type   = substr($val, 0, $st);
-							$length = substr($val, $st+1, $en - $st -1 );
-
-							//	...
-							if( is_numeric($length) ){
-								$length = (int)$length;
-							}
-
-							//	...
-							$result[$name]['type']   = $type;
-							$result[$name]['length'] = $length;
-
-							//	...
-							continue;
-						}
-					}
-
-					//	...
-					if( $key === 'null' ){
-						$val = $val === 'YES' ? true: false;
-					}
-
-					//	...
-					if( $key === 'key' ){
-						$val = strtolower($val);
-					}
-
-					//	...
-					$result[$name][$key] = $val;
-				}
-			}else if( $index ){
-				$name = $temp['Key_name'];
-				$seq  = $temp['Seq_in_index'];
-				$result[$name][$seq] = $temp;
+		if( $select ){
+			if( strpos($query, 'FROM `mysql`.`user`') or strpos($query, 'FROM "pg_shadow"') ){
+				$user     = true;
+			}else if( strpos($query, 'FROM information_schema.columns') ){
+				$column   = true;
+			}else if( strpos($query, 'FROM "pg_stat_user_tables"') or strpos($query, "FROM 'sqlite_master'") ){
+				$table    = true;
 			}else{
-				foreach( $temp as $key => $val ){
-					$result[] = $val;
+				$database = true;
+			};
+		}
+
+		//	...
+		if( $database ){
+			//	...
+			return self::_Database($records);
+		}else if( $table ){
+			return self::_Table($records);
+		}else if( $column ){
+			//	...
+			return self::_Column($records);
+		}else if( $index ){
+			//	...
+			return self::_Index($records);
+		}else if( $user ){
+			//	...
+			return self::_User($records);
+		}else if( $grant ){
+			//	...
+			return self::_Grant($records);
+		}else{
+			//	...
+			return $records;
+		}
+	}
+
+	/** Database
+	 *
+	 * @param  array $records
+	 * @return array $result
+	 */
+	static private function _Database($records)
+	{
+		//	...
+		$result = [];
+
+		//	...
+		foreach( $records as $record ){
+			$result[] = $record['Database'] ?? $record['datname'] ?? 'empty database name';
+		};
+
+		//	...
+		return $result;
+	}
+
+	/** Table
+	 *
+	 * @param  array $records
+	 * @return array $result
+	 */
+	static private function _Table($records)
+	{
+		//	...
+		$result = [];
+
+		//	...
+		foreach( $records as $record ){
+			foreach( $record as $table_name ){
+				$result[] = $table_name;
+			};
+		};
+
+		//	...
+		return $result;
+	}
+
+	/** Column
+	 *
+	 * @param  array $records
+	 * @return array $result
+	 */
+	static private function _Column($records)
+	{
+		//	...
+		$result = [];
+
+		//	...
+		foreach( $records as $record ){
+			//	...
+			$name = $record['Field'] ?? $record['column_name'] ?? $record['name'] ?? null;
+
+			//	...
+			foreach( $record as $key => $val ){
+				//	...
+				if( $key === 'Collation' or $key === 'Default' ){
+					if( $val === null ){
+						continue;
+					}
 				}
+
+				//	...
+				$key = lcfirst($key);
+
+				//	...
+				if( $key === 'type' ){
+					//	Parse --> type unsigned --> type, unsigned
+					if( $pos = strpos($val, 'unsigned') ){
+						$val = substr($val, 0, $pos-1);
+						$result[$name]['unsigned'] = true;
+					}
+
+					//	Parse --> type(length) --> type, length
+					if( $st = strpos($val, '(') and $en = strpos($val, ')') ){
+						$type   = substr($val, 0, $st);
+						$length = substr($val, $st+1, $en - $st -1 );
+
+						//	...
+						if( is_numeric($length) ){
+							$length = (int)$length;
+						}
+
+						//	...
+						$result[$name]['type']   = $type;
+						$result[$name]['length'] = $length;
+
+						//	...
+						continue;
+					}
+				}
+
+				//	...
+				if( $key === 'null' ){
+					$val = $val === 'YES' ? true: false;
+				}
+
+				//	...
+				if( $key === 'key' ){
+					$val = strtolower($val);
+				}
+
+				//	...
+				$result[$name][$key] = $val;
 			}
 		}
 
 		//	...
 		return $result;
+	}
+
+	/** Index
+	 *
+	 * @param  array $records
+	 * @return array $result
+	 */
+	static private function _Index(array $records)
+	{
+		//	...
+		$result = [];
+
+		//	...
+		foreach( $records as $record ){
+			//	...
+			$database_name=                             $record['TABLE_SCHEMA']  ?? null;
+		//	$database_name=                             $record['INDEX_SCHEMA']  ?? null;
+			$table_name   = $record['Table']         ?? $record['TABLE_NAME']    ?? null;
+			$key_name     = $record['Key_name']      ?? $record['INDEX_NAME']    ?? null;
+			$key_type     = $record['Index_type']    ?? $record['INDEX_TYPE']    ?? null;
+		//	$sequence     = $record['Seq_in_index']  ?? $record['SEQ_IN_INDEX']  ?? null;
+			$column_name  = $record['Column_name']   ?? $record['COLUMN_NAME']   ?? null;
+			$comment1     = $record['Comment']       ?? $record['COMMENT']       ?? null;
+			$comment2     = $record['Index_comment'] ?? $record['INDEX_COMMENT'] ?? null;
+			$unique       = $record['Non_unique']    ?? $record['NON_UNIQUE']    ?? null;
+			$unique       = $unique ? false: true;
+
+			//	...
+			$result[$key_name]['database']  = $database_name;
+			$result[$key_name]['table']     = $table_name;
+			$result[$key_name]['primary']   = $key_name === 'PRIMARY' ? true: false;
+			$result[$key_name]['unique']    = $unique;
+			$result[$key_name]['type']      = $key_type;
+			$result[$key_name]['columns'][] = $column_name;
+			$result[$key_name]['comment']   = $comment1 . $comment2;
+		}
+
+		//	...
+		return $result;
+	}
+
+	/** User
+	 *
+	 * @param  array $records
+	 * @return array $result
+	 */
+	static private function _User(array $records)
+	{
+		//	...
+		$result = [];
+
+		//	...
+		foreach( $records as $record ){
+			//	...
+			$host     = $record['host']     ?? 'localhost';
+			$user     = $record['user']     ?? $record['usename'] ?? null;;
+		//	$password = $record['password'] ?? null;
+
+			//	...
+			$result[$host][$user] = true;
+		}
+
+		//	...
+		return $result;
+	}
+
+	/** Grant
+	 *
+	 * @param  array $records
+	 * @return array $result
+	 */
+	static private function _Grant(array $records)
+	{
+		return MYSQL::Grant($records);
 	}
 }
