@@ -1,0 +1,83 @@
+<?php
+/**
+ * unit-testcase:/unit/database/action_menu.phtml
+ *
+ * @creation  2019-03-04
+ * @version   1.0
+ * @package   unit-testcase
+ * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
+ * @copyright Tomoaki Nagahara All right reserved.
+ */
+
+/** namespace
+ *
+ * @creation  2019-03-04
+ */
+namespace OP;
+
+/* @var $app     UNIT\App  */
+/* @var $form    UNIT\Form */
+/* @var $args    array     */
+/* @var $io      boolean   */
+
+//	...
+$prod   = isset($args) ? ($args[2] ?? null): null;
+$cate   = isset($args) ? ($args[3] ?? null): null;
+//$action = isset($args) ? ($args[4] ?? null): null;
+
+//	...
+$query = count($_GET) ? '?'.http_build_query($_GET): null;
+
+//	...
+$categories = [];
+$categories['dml'] = ['count','insert','select','update','delete','qql'];
+$categories['dcl'] = [];
+$categories['ddl'] = [];
+$categories['orm'] = [];
+$categories['selftest'] = [];
+?>
+
+<!-- Select database product -->
+<section class="menu-area">
+[
+	<?php foreach( ['mysql','pgsql','sqlite'] as $key ): ?>
+	<span><a href="<?= "{$key}/{$query}" ?>"><?= $key ?></a></span>
+	<?php endforeach; ?>
+]
+</section>
+
+<!-- Select database product -->
+<?php if( isset($prod) ): ?>
+<section class="menu-area">
+[
+	<?php foreach( $categories as $key => $keys ): ?>
+	<span><a href="<?= $app->URL("testcase:/unit/database/{$prod}/{$key}/{$query}") ?>"><?= $key ?></a></span>
+	<?php endforeach; ?>
+]
+</section>
+<?php else: ?>
+<p style="margin: 1em;">Choose database product.</p>
+<?php endif; ?>
+
+<!-- Select action -->
+<?php if( isset($cate) and $categories[$cate] ): ?>
+<section class="menu-area">
+[
+	<?php foreach( $categories[$cate] as $key ): ?>
+	<span><a href="<?= $app->URL("testcase:/unit/database/{$prod}/{$cate}/{$key}/{$query}") ?>"><?= $key ?></a></span>
+	<?php endforeach; ?>
+]
+</section>
+<?php endif; ?>
+<?php
+if( false ){
+	D($keys);
+};
+?>
+<style>
+.menu-area span:not(:last-child):after {
+	margin-left:  0.4em;
+	margin-right: 0.2em;
+	content: "|";
+}
+</style>
