@@ -2,8 +2,15 @@
 /**
  * unit-database:/Database.class.php
  *
+ * v1.0 Single file
+ * v2.0 Class
+ * v3.0 onepiece-framework
+ * v4.0 unit Gen1 2017
+ * v4.1 unit Gen2 2018
+ * v4.2 unit Gen2 2019
+ *
  * @creation  2018-04-20
- * @version   1.0
+ * @version   4.2
  * @package   unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
@@ -17,9 +24,17 @@ namespace OP\UNIT;
 
 /** Used class
  *
+ * @created   2019-03-04
  */
-use \OP\Notice;
-use \OP\IF_DATABASE;
+use PDO;
+use Exception;
+use OP\OP_CORE;
+use OP\OP_UNIT;
+use OP\OP_DEBUG;
+use OP\IF_UNIT;
+use OP\IF_DATABASE;
+use OP\Notice;
+use OP\Unit;
 
 /** Database
  *
@@ -29,12 +44,12 @@ use \OP\IF_DATABASE;
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
-class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
+class Database implements IF_DATABASE, IF_UNIT
 {
 	/** trait
 	 *
 	 */
-	use \OP\OP_CORE, \OP\OP_UNIT;
+	use OP_CORE, OP_UNIT, OP_DEBUG;
 
 	/** Connection configuration.
 	 *
@@ -42,15 +57,9 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 	 */
 	private $_config = [];
 
-	/** Stack past queries.
-	 *
-	 * @var array
-	 */
-	private $_queries = [];
-
 	/** PHP Data Objects.
 	 *
-	 * @var \PDO
+	 * @var PDO
 	 */
 	private $_PDO;
 
@@ -65,16 +74,9 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 	 */
 	function __construct()
 	{
-	//	$this->_SQL = $this->Unit('SQL');
-	}
-
-	/** If is connect.
-	 *
-	 * @return	 boolean
-	 */
-	function isConnect()
-	{
-		return $this->_PDO ? true: false;
+		//	Not singleton object.
+		$this->_SQL = Unit::Instantiate('SQL');
+		$this->_SQL->DB($this);
 	}
 
 	/** Return instantiated PDO instance. (So-called singleton)
@@ -96,6 +98,15 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 		return $this->_config;
 	}
 
+	/** If is connect.
+	 *
+	 * @return	 boolean
+	 */
+	function isConnect()
+	{
+		return $this->_PDO ? true: false;
+	}
+
 	/** Connect database server.
 	 *
 	 * @param	 array		 $config
@@ -103,6 +114,11 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 	 */
 	function Connect($config)
 	{
+		//	...
+		if( empty($config['prod']) and $config['scheme'] ?? null ){
+			$config['prod'] = $config['scheme'];
+		};
+
 		//	...
 		$config['prod'] = strtolower($config['prod']);
 
@@ -137,36 +153,6 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 		return $this->_PDO ? true: false;
 	}
 
-	/** Create
-	 *
-	 * @return \OP\UNIT\DATABASE\Create
-	 */
-	function Create()
-	{
-		require_once(__DIR__.'/Create.class.php');
-		return new \OP\UNIT\DATABASE\Create($this);
-	}
-
-	/** Drop
-	 *
-	 * @return \OP\UNIT\DATABASE\Drop
-	 */
-	function Drop()
-	{
-		require_once(__DIR__.'/Drop.class.php');
-		return new \OP\UNIT\DATABASE\Drop($this);
-	}
-
-	/** Alter
-	 *
-	 * @return \OP\UNIT\DATABASE\Alter
-	 */
-	function Alter()
-	{
-		require_once(__DIR__.'/Alter.class.php');
-		return new \OP\UNIT\DATABASE\Alter($this);
-	}
-
 	/** Set/Get last time used database name.
 	 *
 	 * @param  string $database
@@ -190,24 +176,28 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 		return $this->_config['database'];
 	}
 
-	/** Do SQL.
+	/** Create
 	 *
-	 * @param	 array		 $config
-	 * @param	 string		 $function
-	 * @return	 mixed		 $result
 	 */
-	function _SQL($config, $function)
+	function Create()
 	{
-		//	...
-		if(!$this->_SQL ){
-			return false;
-		}
 
-		//	...
-		$query = $this->_SQL->{$function}($config, $this);
+	}
 
-		//	...
-		return $this->Query($query, $function);
+	/** Change
+	 *
+	 */
+	function Change()
+	{
+
+	}
+
+	/** Drop
+	 *
+	 */
+	function Drop()
+	{
+
 	}
 
 	/** Count number of record at conditions.
@@ -218,8 +208,18 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 	 */
 	function Count($config)
 	{
-		$count = $this->_SQL($config, __FUNCTION__);
-		return empty($count) ? 0: (int)$count;
+		//	...
+		$config['field'][]= "COUNT(*)";
+		$config['limit']  = 1;
+
+		//	...
+		$sql = $this->_SQL->DML($this)->Select($config);
+
+		//	...
+		$result = $this->SQL($sql, 'select');
+
+		//	...
+		return (int)($result['COUNT(*)'] ?? 0);
 	}
 
 	/** Select record at conditions.
@@ -241,7 +241,11 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 	 */
 	function Select($config)
 	{
-		return $this->_SQL($config, __FUNCTION__);
+		//	...
+		$sql = $this->_SQL->DML($this)->Select($config);
+
+		//	...
+		return $this->SQL($sql, 'select');
 	}
 
 	/** Insert new record.
@@ -262,7 +266,11 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 	 */
 	function Insert($config)
 	{
-		return $this->_SQL($config, __FUNCTION__);
+		//	...
+		$sql = $this->_SQL->DML($this)->Insert($config);
+
+		//	...
+		return $this->SQL($sql, 'insert');
 	}
 
 	/** Update record at conditions.
@@ -285,7 +293,11 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 	 */
 	function Update($config)
 	{
-		return $this->_SQL($config, __FUNCTION__);
+		//	...
+		$sql = $this->_SQL->DML($this)->Update($config);
+
+		//	...
+		return $this->SQL($sql, 'update');
 	}
 
 	/** Delete record at conditions.
@@ -307,59 +319,47 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 	 */
 	function Delete($config)
 	{
-		return $this->_SQL($config, __FUNCTION__);
+		//	...
+		$sql = $this->_SQL->DML($this)->Delete($config);
+
+		//	...
+		return $this->SQL($sql, 'delete');
 	}
 
-	/** Get database or table or user.
+	/** Begin transactoin.
 	 *
-	 * @param	 array	 $config
-	 * @return	 array	 $array
+	 * @see		 IF_DATABASE::Transaction()
+	 * @see		\PDO::beginTransaction()
+	 * @return	 bool
 	 */
-	function Show($config)
+	function Transaction()
 	{
-		//	Generate SQL.
-		$sql = $this->_SQL->Show($config, $this);
-
-		//	Execute SQL.
-		return $this->SQL($sql, 'show');
+		$this->_debug['SQL'][] = 'Transaction Begin';
+		return $this->_PDO->beginTransaction();
 	}
 
-	/** Get field name of primary key.
+	/** Commit transactoin.
 	 *
-	 * @param	 string	 $database
-	 * @param	 string	 $table
-	 * @return	 string	 $pkey
+	 * @see		 IF_DATABASE::Commit()
+	 * @see		\PDO::commit()
+	 * @return	 bool
 	 */
-	function PKey($database, $table)
+	function Commit()
 	{
-		$database = $this->Quote($database);
-		$table    = $this->Quote($table);
-		return $this->Query("SHOW INDEX FROM {$database}.{$table}", 'show')['PRIMARY'][1]['Column_name'] ?? null;
+		$this->_debug['SQL'][] = 'Transaction Commit';
+		return $this->_PDO->commit();
 	}
 
-	/** Do QQL.
+	/** Rollback transactoin.
 	 *
-	 * @see		 IF_DATABASE::QQL()
-	 * @param	 string		 $qql
-	 * @param	 array		 $options
-	 * @return	 array		 $record
+	 * @see		 IF_DATABASE::Rollback()
+	 * @see		\PDO::rollBack()
+	 * @return	 bool
 	 */
-	function Quick($qql, $options=[])
+	function Rollback()
 	{
-		include_once(__DIR__.'/QQL.class.php');
-		return Database\QQL::Execute($qql, $options, $this);
-	}
-
-	/** Do QQL.
-	 *
-	 * @see		 IF_DATABASE::QQL()
-	 * @param	 string		 $qql
-	 * @param	 array		 $options
-	 * @return	 array		 $record
-	 */
-	function QQL($qql, $options=[])
-	{
-		return $this->Quick($qql, $options);
+		$this->_debug['SQL'][] = 'Transaction Rollback';
+		return $this->_PDO->rollBack();
 	}
 
 	/** Do Quote by each product.
@@ -384,11 +384,34 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 				break;
 
 			default:
-				throw new \Exception("Has not been support this product. ($prod)");
+				throw new Exception("Has not been support this product. ($prod)");
 		}
 
 		//	...
 		return $l.trim($value).$r;
+	}
+
+	function Quick(string $qql, array $options=[])
+	{
+		return $this->QQL($qql, $options);
+	}
+
+	function Query(string $query, string $type='')
+	{
+		return $this->SQL($query, $type);
+	}
+
+	/** Do QQL.
+	 *
+	 * @see		 IF_DATABASE::QQL()
+	 * @param	 string		 $qql
+	 * @param	 array		 $options
+	 * @return	 array		 $record
+	 */
+	function QQL(string $qql, array $options=[])
+	{
+		include_once(__DIR__.'/QQL.class.php');
+		return DATABASE\QQL::Execute($qql, $options, $this);
 	}
 
 	/** SQL is execute.
@@ -398,18 +421,7 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 	 * @param	 string		 $type
 	 * @return	 array		 $record
 	 */
-	function SQL(string $sql, string $type)
-	{
-		return $this->Query($sql, $type);
-	}
-
-	/** Execute SQL statement.
-	 *
-	 * @param	 string		 $query
-	 * @param	 string		 $type
-	 * @return	 array		 $record
-	 */
-	function Query(string $query, string $type='')
+	function SQL(string $query, string $type='')
 	{
 		//	...
 		$type = strtolower($type);
@@ -421,15 +433,14 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 
 		//	Check of PDO instantiate.
 		if(!$this->_PDO ){
-			Notice::Set("Has not been instantiate PDO.", debug_backtrace(false));
-			return ($type === 'select') ? []: false;
-		}
+			throw new Exception("Has not been instantiate PDO.");
+		};
 
 		//	Remove space.
 		$query = trim($query);
 
 		//	Stacking query for developers.
-		$this->_queries[] = $query;
+		$this->__DebugSet('sql', $query);
 
 		//	Execute SQL statement.
 		$statement = $this->_PDO->query($query);
@@ -451,7 +462,7 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 			case 'select':
 				$result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 				if( strpos($query.' ', ' LIMIT 1 ') and $result ){
-					/*
+					/* For QQL
 					if( count($result[0]) === 1 ){
 						foreach( $result[0] as $result ){
 							//	...
@@ -461,12 +472,12 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 					$result = $result[0];
 				}
 				break;
-
+			/*
 			case 'count':
 				$result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 				$result = $result[0]['COUNT(*)'] ?? null;
 				break;
-
+			*/
 			case 'insert':
 				if(!$result = $this->_PDO->lastInsertId(/* $name is necessary at PGSQL */) ){
 					$result = true;
@@ -501,61 +512,10 @@ class Database implements \OP\IF_DATABASE, \OP\IF_UNIT
 				break;
 
 			default:
-				Notice::Set("Has not been support this type. ($type)", debug_backtrace(false));
+				throw new Exception("Has not been support this type. ($type)");
 		}
 
 		//	...
 		return isset($result) ? $result: [];
-	}
-
-	/** Begin transactoin.
-	 *
-	 * @see		 IF_DATABASE::Transaction()
-	 * @see		\PDO::beginTransaction()
-	 * @return	 bool
-	 */
-	function Transaction()
-	{
-		return $this->_PDO->beginTransaction();
-	}
-
-	/** Commit transactoin.
-	 *
-	 * @see		 IF_DATABASE::Commit()
-	 * @see		\PDO::commit()
-	 * @return	 bool
-	 */
-	function Commit()
-	{
-		return $this->_PDO->commit();
-	}
-
-	/** Rollback transactoin.
-	 *
-	 * @see		 IF_DATABASE::Rollback()
-	 * @see		\PDO::rollBack()
-	 * @return	 bool
-	 */
-	function Rollback()
-	{
-		return $this->_PDO->rollBack();
-	}
-
-	/** Display how to use.
-	 *
-	 * @see		 IF_DATABASE::Help()
-	 */
-	function Help($topic=null)
-	{
-		Html('$db-&gtHelp($topic) -- Topic --&gt Connect, Insert, Select, Update, Delete, SQL, QQL');
-	}
-
-	/** Display debug information.
-	 *
-	 * @see		 IF_DATABASE::Debug()
-	 */
-	function Debug($config=null)
-	{
-		D( $this->_config, $this->_queries);
 	}
 }
