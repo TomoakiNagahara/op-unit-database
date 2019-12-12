@@ -1,0 +1,60 @@
+<?php
+/**
+ * module-testcase:/unit/database/dml/action_form.phtml
+ *
+ * @creation  2019-03-04
+ * @version   1.0
+ * @package   module-testcase
+ * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
+ * @copyright Tomoaki Nagahara All right reserved.
+ */
+
+/** namespace
+ *
+ * @creation  2019-03-04
+ */
+namespace OP;
+
+/* @var $app     UNIT\App  */
+/* @var $form    UNIT\Form */
+/* @var $prod    string    */
+/* @var $action  string    */
+/* @var $result  boolean   */
+?>
+<section>
+<?php if( isset($action) ): ?>
+<div style="margin-top: 1em; padding: 1em; padding-right: 2em; display: inline-block; border: 1px solid black;">
+	<section style="margin-bottom: 0.5em;">
+	<?php if( isset($result) ): ?>
+		<span class="<?= $result ? 'success':'failed' ?>"><?= ucfirst($action)." was " . ($result ? 'successful':'failed') ?></span>
+	<?php else: ?>
+		<span>Please input text.</span>
+	<?php endif; ?>
+	</section>
+	<?= $form->Start() ?>
+	<table>
+		<tr>
+			<th><?= $form->Label('text') ?></th>
+			<td><?= $form->Input('text') ?></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><?= $form->Error('text') ?></td>
+		</tr>
+		<tr>
+			<td colspan=2>
+				<?= $form->Input('transaction') ?>
+				<?= $form->Input('commit') ?>
+			</td>
+		</tr>
+		<tr>
+			<th></th>
+			<td><?= $form->Input('button') ?></td>
+		</tr>
+	</table>
+	<?= $form->Finish() ?>
+</div>
+<?php elseif( isset($prod) ): ?>
+<p style="margin: 1em;">Choose database action.</p>
+<?php endif; ?>
+</section>
