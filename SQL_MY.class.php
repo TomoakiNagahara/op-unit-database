@@ -19,8 +19,10 @@ namespace OP\UNIT\DATABASE;
  *
  * @creation  2019-03-04
  */
+use Exception;
 use OP\OP_CORE;
 use OP\Notice;
+use function OP\ConvertPath;
 
 /** MYSQL
  *
@@ -40,7 +42,7 @@ class MYSQL
 	/** Config
 	 *
 	 * @param	 array		 $config
-	 * @throws	\Exception	 $e
+	 * @throws	 Exception	 $e
 	 * @return	 array		 $config
 	 */
 	static function Config(array $config)
@@ -49,7 +51,7 @@ class MYSQL
 		if(!defined('\PDO::MYSQL_ATTR_INIT_COMMAND') ){
 			$module = 'mysql';
 			include( ConvertPath('asset:/bootstrap/php/content.phtml') );
-			throw new \Exception("php-{$module} is not installed.");
+			throw new Exception("php-{$module} is not installed.");
 		};
 
 		//	...
@@ -64,7 +66,7 @@ class MYSQL
 	/** Data Source Name
 	 *
 	 * @param	 array		 $config
-	 * @throws	\Exception	 $e
+	 * @throws	 Exception	 $e
 	 * @return	 string		 $dsn
 	 */
 	static function DSN(array $config)
@@ -79,7 +81,7 @@ class MYSQL
 		if( $uri = $config['uri'] ?? null ){
 			/*
 			if(!file_exists($uri) ){
-				throw new \Exception("File has not been exists. ($uri)");
+				throw new Exception("File has not been exists. ($uri)");
 			};
 			*/
 			return "uri:file://{$uri}";
@@ -87,7 +89,7 @@ class MYSQL
 
 		//	...
 		if(!$host = $config['host'] ?? null ){
-			throw new \Exception("Has not been set host.");
+			throw new Exception("Has not been set host name.");
 		};
 
 		//	Data Source Name
@@ -105,7 +107,7 @@ class MYSQL
 	/** Option
 	 *
 	 * @param	 array		 $config
-	 * @throws	\Exception	 $e
+	 * @throws	 Exception	 $e
 	 * @return	 array		 $option
 	 */
 	static function Option(array $config)
@@ -132,7 +134,7 @@ class MYSQL
 	/** Connect
 	 *
 	 * @param	 array		 $config
-	 * @throws	\Exception	 $e
+	 * @throws	 Exception	 $e
 	 * @return	\PDO		 $pdo
 	 */
 	static function Connect($config)
@@ -152,8 +154,8 @@ class MYSQL
 		}catch( \PDOException $e ){
 			require_once(__DIR__.'/SQL_PHP_PDO_Error.class.php');
 			SQL_PHP_PDO_Error::Auto('mysql', $e);
-		}catch( \Exception $e ){
-			Notice::Set($e->getMessage() . " ($dsn, $user, $password)");
+		}catch( Exception $e ){
+			Notice::Set($e->getMessage());
 		};
 	}
 
