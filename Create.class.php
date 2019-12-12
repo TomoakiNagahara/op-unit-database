@@ -21,7 +21,6 @@ namespace OP\UNIT\DATABASE;
  */
 use OP\OP_CORE;
 use OP\IF_DATABASE;
-use OP\Notice;
 
 /** Database
  *
@@ -60,7 +59,7 @@ class Create
 	function User($config)
 	{
 		//	...
-		$sql = \OP\UNIT\SQL\User::Create($config, $this->_DB);
+		$sql = '\OP\UNIT\SQL\User'::Create($config, $this->_DB);
 
 		//	...
 		$result = $this->_DB->Query($sql, 'create');
@@ -82,7 +81,7 @@ class Create
 		};
 
 		//	...
-		$sql = \OP\UNIT\SQL\Database::Create($config, $this->_DB);
+		$sql = '\OP\UNIT\SQL\Database'::Create($config, $this->_DB);
 
 		//	...
 		$result = $this->_DB->Query($sql, 'create');
@@ -99,7 +98,7 @@ class Create
 	function Table($config)
 	{
 		//	...
-		$sql = \OP\UNIT\SQL\Table::Create($config, $this->_DB);
+		$sql = '\OP\UNIT\SQL\Table'::Create($config, $this->_DB);
 
 		//	...
 		if( $result = $this->_DB->Query($sql, 'create') ){
