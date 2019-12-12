@@ -1,22 +1,17 @@
 The onepiece-framework Database Unit.
 ===
 
-## How to use
+## Usage
+
+### Instancate
+
+```php
+$db = $app->Unit('Database');
+```
 
 ### Connection
 
-```
-<?php
-//  Load of database unit.
-if(!Unit::Load('database') ){
-    throw new Exception('Load of the Database unit was failed.');
-}
-
-/* @var $db \OP\UNIT\Database */
-if(!$db = Unit::Instance('Database') ){
-    throw new Exception('Instance of the Database unit was failed.');
-}
-
+```php
 //  Configuration.
 $config = [
     'prod'     => 'mysql',
@@ -33,26 +28,15 @@ if(!$io = $db->Connect($config) ){
 }
 ```
 
-### Fetch record. (Throw SQL Query)
+### SQL
 
-```
-<?php
-/* @var $sql \OP\UNIT\Database */
-if(!$sql = Unit::Instance('Database') ){
-    throw new Exception('Instance of the Database unit was failed.');
-}
-
-//  Connect to database by configuration file.
-if(!$io = $db->Connect('config.php') ){
-    throw new Exception('Connect to database was failed.');
-}
-
+```php
 /**
- * Get records by direct write SQL.
+ * You can execute SQL statement directly.
  * This is not recommended.
- * But SQL is properly escaped.
+ * Because, SQL injection occurs.
  */
-$records = $db->Query('SELECT * FROM table_name');
+$records = $db->SQL('SELECT * FROM table_name');
 
 /**
  * Result of record may return int 0 or empty array.
@@ -63,55 +47,61 @@ if( $records === false ){
 }
 ```
 
-### Generate SQL Query by SQL-UNIT.
+### Select
 
-```
-<?php
-/* @var $sql \OP\UNIT\SQL */
-if(!$sql = Unit::Instance('SQL') ){
-    throw new Exception('Instance of the SQL unit was failed.');
-}
-
-/* @var $sql \OP\UNIT\Database */
-if(!$db = Unit::Instance('Database') ){
-    throw new Exception('Instance of the Database unit was failed.');
-}
-
-//  Connect to database by configuration file.
-if(!$io = $db->Connect('config.php') ){
-    throw new Exception('Connect to database was failed.');
-}
-
-//  Create select configuration.
+```php
+//  Config
 $config = [
     'table' => 'table_name',
+    'field' => 'id, nickname, timestamp, YEAR(timestamp) as year',
     'limit' =>  10,
-    'where' = [
-        'id' = [
-            'value' =  1,
-            'evalu' = '>'
-        ]
-    ]
+    'order' => 'id, year desc',
+    'offset'=>  10,
+    'where'[] = 'id > 0',
 ];
 
-//  Generate select sql query string.
-$query = $sql->Select($config);
+//  Fetch records.
+$records = $db->Select($query);
+```
+
+### Insert
+
+```php
+//  Config
+$config = [
+    'table' => 'table_name',
+    'set'[] =  "nickname = $nickname",
+];
 
 //  Fetch records.
-$records = $db->Query($query);
+$records = $db->Insert($query);
 ```
 
-### SQL
+### Update
 
-### QQL
+```php
+//  Config
+$config = [
+    'table' => 'table_name',
+    'limit' =>  1,
+    'where'[] = "id = $id";
+    'set'[] =  "nickname = $nickname",
+];
 
-### How to debug
-
+//  Fetch records.
+$records = $db->Update($query);
 ```
-<?php
-//	Dump all throwed query.
-D( $db->Queries() );
 
-//	Dump debug information.
-$db->Debug();
+### Delete
+
+```php
+//  Config
+$config = [
+    'table' => 'table_name',
+    'limit' =>  1,
+    'where'[] = "id = $id";
+];
+
+//  Fetch records.
+$records = $db->Delete($query);
 ```
