@@ -21,7 +21,6 @@ namespace OP\UNIT\DATABASE;
  */
 use OP\OP_CORE;
 use OP\IF_DATABASE;
-use OP\Notice;
 
 /** Drop
  *
@@ -60,7 +59,7 @@ class Drop
 	function User($config)
 	{
 		//	...
-		$sql = \OP\UNIT\SQL\User::Drop($config, $this->_DB);
+		$sql = '\OP\UNIT\SQL\User'::Drop($config, $this->_DB);
 
 		//	...
 		$result = $this->_DB->Query($sql, 'drop');
@@ -76,7 +75,7 @@ class Drop
 	function Database($config)
 	{
 		//	...
-		$sql = \OP\UNIT\SQL\Database::Drop($config, $this->_DB);
+		$sql = '\OP\UNIT\SQL\Database'::Drop($config, $this->_DB);
 
 		//	...
 		$result = $this->_DB->Query($sql, 'drop');
@@ -92,7 +91,7 @@ class Drop
 	function Table($config)
 	{
 		//	...
-		$sql = \OP\UNIT\SQL\Table::Drop($config, $this->_DB);
+		$sql = '\OP\UNIT\SQL\Table'::Drop($config, $this->_DB);
 
 		//	...
 		$result = $this->_DB->Query($sql, 'drop');
