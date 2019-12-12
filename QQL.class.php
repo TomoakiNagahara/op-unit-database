@@ -167,7 +167,7 @@ class QQL
 		//	field
 		if( $pos = strpos($qql, '<-') ){
 			list($field, $qql) = explode('<-', $qql);
-			$field = self::_ParseField($field, $_db);
+			$field = self::_ParseField(trim($field), $_db);
 		}else{
 			$field = '*';
 		}
@@ -295,6 +295,15 @@ class QQL
 				//	Has value.
 				$record = array_shift($record);
 			};
+		};
+
+		//	Result has many record, and single field.
+		if( is_array($record) and ($field !== '*') and (strpos($field, ',') === false) ){
+			$result = [];
+			foreach( $record as $temp ){
+				$result[] = array_shift($temp);
+			};
+			$record = $result;
 		};
 
 		//	...
