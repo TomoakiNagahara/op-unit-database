@@ -33,6 +33,7 @@ use OP\OP_UNIT;
 use OP\IF_UNIT;
 use OP\IF_DATABASE;
 use OP\Unit;
+use function apc_exists;
 
 /** Database
  *
@@ -281,10 +282,31 @@ class Database implements IF_DATABASE, IF_UNIT
 	function Select($config)
 	{
 		//	...
+		if( $cache = $config['cache'] ?? null ){
+			unset($config['cache']);
+		}
+
+		//	...
+		$hash = md5( $this->_config['database'] .', '. serialize($config) );
+
+		//	...
+		if( $cache and apcu_exists($hash) ){
+			return apcu_fetch($hash);
+		}
+
+		//	...
 		$sql = $this->_SQL->DML($this)->Select($config);
 
 		//	...
-		return $this->SQL($sql, 'select');
+		$result = $this->SQL($sql, 'select');
+
+		//	...
+		if( $cache ){
+			apcu_add($hash, $result, $cache);
+		}
+
+		//	...
+		return $result;
 	}
 
 	/** Insert new record.
