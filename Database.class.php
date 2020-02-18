@@ -79,6 +79,19 @@ class Database implements IF_DATABASE, IF_UNIT
 		$this->_SQL->DB($this);
 	}
 
+	/** Destruct
+	 *
+	 * @created   2020-02-10
+	 */
+	function __destruct()
+	{
+		if( $debug = htmlentities($_GET['debug'], ENT_QUOTES, 'utf-8') ?? null ){
+			if(!empty($debug) and !empty($debug['database'] ?? true) ){
+				$this->Debug();
+			}
+		}
+	}
+
 	/** Return instantiated PDO instance. (So-called singleton)
 	 *
 	 * @return \PDO
