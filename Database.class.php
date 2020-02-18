@@ -568,4 +568,13 @@ class Database implements IF_DATABASE, IF_UNIT
 		//	...
 		return isset($result) ? $result: [];
 	}
+
+	/** Debug
+	 *
+	 * @created   2020-02-10
+	 */
+	function Debug()
+	{
+		D( $this->_queries );
+	}
 }
