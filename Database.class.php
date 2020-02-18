@@ -32,7 +32,6 @@ use OP\OP_CORE;
 use OP\OP_UNIT;
 use OP\IF_UNIT;
 use OP\IF_DATABASE;
-use OP\Notice;
 use OP\Unit;
 
 /** Database
@@ -144,6 +143,11 @@ class Database implements IF_DATABASE, IF_UNIT
 	function Connect($config)
 	{
 		//	...
+		if( empty($config) ){
+			throw new \Exception("Database connect config is empty.");
+		};
+
+		//	...
 		if( empty($config['prod']) and $config['scheme'] ?? null ){
 			$config['prod'] = $config['scheme'];
 		};
@@ -175,7 +179,7 @@ class Database implements IF_DATABASE, IF_UNIT
 				if( empty($prod) ){
 					$prod = 'empty';
 				};
-				Notice::Set("Has not been support this product. ($prod)");
+				throw new \Exception("Has not been support this product. ($prod)");
 		};
 
 		//	...
