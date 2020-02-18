@@ -252,6 +252,12 @@ class Database implements IF_DATABASE, IF_UNIT
 	function Count($config)
 	{
 		//	...
+		if( is_string($config) ){
+			Unit::Load('QQL');
+			$config = \OP\UNIT\QQL::Parse($config);
+		};
+
+		//	...
 		$config['field'][]= "COUNT(*)";
 		$config['limit']  = 1;
 
