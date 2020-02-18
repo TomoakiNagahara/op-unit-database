@@ -1,15 +1,29 @@
 The onepiece-framework Database Unit.
 ===
 
-## Usage
+# Usage
 
-### Instancate
+## Debug
+
+ Added debug flag to URL Query.
+
+```
+http://example.com/?debug=1
+```
+
+ If remove database debug when in another debug.
+
+```
+http://example.com/?debug=1&debug[database]=0
+```
+
+## Instancate
 
 ```php
 $db = $app->Unit('Database');
 ```
 
-### Connection
+## Connection
 
 ```php
 //  Configuration.
@@ -28,7 +42,7 @@ if(!$io = $db->Connect($config) ){
 }
 ```
 
-### SQL
+## SQL
 
 ```php
 /**
