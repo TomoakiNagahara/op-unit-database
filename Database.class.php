@@ -85,7 +85,11 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function __destruct()
 	{
-		if( $debug = htmlentities($_GET['debug'], ENT_QUOTES, 'utf-8') ?? null ){
+		//	...
+		if( $debug = $_GET['debug'] ?? null ){
+			$debug = htmlentities($debug, ENT_QUOTES, 'utf-8');
+
+			//	...
 			if(!empty($debug) and !empty($debug['database'] ?? true) ){
 				$this->Debug();
 			}
