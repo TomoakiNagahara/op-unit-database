@@ -30,7 +30,6 @@ use PDO;
 use Exception;
 use OP\OP_CORE;
 use OP\OP_UNIT;
-use OP\OP_DEBUG;
 use OP\IF_UNIT;
 use OP\IF_DATABASE;
 use OP\Notice;
@@ -49,13 +48,19 @@ class Database implements IF_DATABASE, IF_UNIT
 	/** trait
 	 *
 	 */
-	use OP_CORE, OP_UNIT, OP_DEBUG;
+	use OP_CORE, OP_UNIT;
 
 	/** Connection configuration.
 	 *
 	 * @var array
 	 */
 	private $_config = [];
+
+	/** Stacking query history.
+	 *
+	 * @var array
+	 */
+	private $_queries = [];
 
 	/** PHP Data Objects.
 	 *
@@ -415,14 +420,31 @@ class Database implements IF_DATABASE, IF_UNIT
 		return $l.trim($value).$r;
 	}
 
+	/** Quick Query Language.
+	 *
+	 * @param  string $qql
+	 * @param  array  $options
+	 * @return array
+	 */
 	function Quick(string $qql, array $options=[])
 	{
 		return $this->QQL($qql, $options);
 	}
 
-	function Query(string $query, string $type='')
+	/** SQL Query.
+	 *
+	 * @param  string $query
+	 * @param  string $type
+	 * @return array
+	 */
+	function Query(string $query='', string $type='')
 	{
-		return $this->SQL($query, $type);
+		//	...
+		if( $query ){
+			return $this->SQL($query, $type);
+		}else{
+			return array_shift($this->_queries);
+		};
 	}
 
 	/** Do QQL.
@@ -464,7 +486,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		$query = trim($query);
 
 		//	Stacking query for developers.
-		$this->__DebugSet('sql', $query);
+		$this->_queries[] = $query;
 
 		//	Execute SQL statement.
 		$statement = $this->_PDO->query($query);
