@@ -16,7 +16,7 @@
 namespace OP;
 
 /* @var $app    UNIT\App      */
-/* @var $db     UNIT\database */
+/* @var $db     UNIT\Database */
 /* @var $form   UNIT\Form     */
 /* @var $args   array         */
 
