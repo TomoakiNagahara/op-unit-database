@@ -156,6 +156,15 @@ class Database implements IF_DATABASE, IF_UNIT
 		$config['prod'] = strtolower($config['prod']);
 
 		//	...
+		if( empty($config['database']) ){
+			//	...
+			if( isset($config['name']) ){
+				//	...
+				$config['database'] = $config['name'];
+			}
+		}
+
+		//	...
 		switch( $prod = $config['prod'] ){
 			case 'mysql':
 				require_once(__DIR__.'/SQL_MY.class.php');
