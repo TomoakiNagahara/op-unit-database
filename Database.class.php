@@ -33,7 +33,6 @@ use OP\OP_UNIT;
 use OP\IF_UNIT;
 use OP\IF_DATABASE;
 use OP\Unit;
-use function apc_exists;
 
 /** Database
  *
@@ -281,17 +280,29 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function Select($config)
 	{
-		//	...
-		if( $cache = $config['cache'] ?? null ){
+		//	Cache feature.
+		if( isset($config['cache']) ){
+			//	...
+			$cache = $config['cache'];
+
+			//	...
 			unset($config['cache']);
-		}
 
-		//	...
-		$hash = md5( $this->_config['database'] .', '. serialize($config) );
+			//	...
+			if(!function_exists('apcu_exists') ){
+				throw new \Exception("Does not installed apcu.");
+			}
 
-		//	...
-		if( $cache and apcu_exists($hash) ){
-			return apcu_fetch($hash);
+			//	...
+			$database = $config['database'] ?? $this->_config['database'];
+
+			//	...
+			$hash = md5( $database . ', ' . serialize($config) );
+
+			//	...
+			if( apcu_exists($hash) ){
+				return apcu_fetch($hash);
+			}
 		}
 
 		//	...
@@ -301,7 +312,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		$result = $this->SQL($sql, 'select');
 
 		//	...
-		if( $cache ){
+		if( isset($cache) and !empty($result) ){
 			apcu_add($hash, $result, $cache);
 		}
 
