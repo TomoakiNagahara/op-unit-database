@@ -90,6 +90,11 @@ class Database implements IF_DATABASE, IF_UNIT
 			return;
 		};
 
+		//	Check if empty debug.
+		if( empty($_GET['debug']) ){
+			return;
+		};
+
 		//	...
 		if( $debug = $_GET['debug'] ?? null ){
 			$debug = htmlentities($debug, ENT_QUOTES, 'utf-8');
