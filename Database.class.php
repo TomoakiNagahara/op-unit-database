@@ -104,6 +104,10 @@ class Database implements IF_DATABASE, IF_UNIT
 				$this->Debug();
 			}
 		}
+		//	Check by Debug::isDebug().
+		if( \OP\Debug::isDebug( get_class($this) ) ){
+			$this->Debug();
+		};
 	}
 
 	/** Return instantiated PDO instance. (So-called singleton)
