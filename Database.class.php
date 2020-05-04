@@ -85,6 +85,11 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function __destruct()
 	{
+		//	Check is admin.
+		if(!\OP\Env::isAdmin() ){
+			return;
+		};
+
 		//	...
 		if( $debug = $_GET['debug'] ?? null ){
 			$debug = htmlentities($debug, ENT_QUOTES, 'utf-8');
