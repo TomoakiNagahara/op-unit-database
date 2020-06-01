@@ -91,8 +91,11 @@ class MYSQL
 			throw new Exception("Has not been set host name.");
 		};
 
+		//	port
+		$port = $config['port'] ?? 3306;
+
 		//	Data Source Name
-		$dsn = "{$prod}:host={$host}";
+		$dsn = "{$prod}:host={$host};port={$port}";
 
 		//	Database
 		if( $database = $config['database'] ?? null ){
