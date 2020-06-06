@@ -59,9 +59,9 @@ class SQL_PHP_PDO_Error
 				$ini = ini_get($key);
 				$str = $e->getMessage();
 				if( $ini ){
-					Notice::Set("{$str} ({$ini})");
+					Notice::Set($str);
 				}else{
-					Notice::Set("Has not been set '{$key}'.");
+					Notice::Set('The path of socket is not set in "php.ini".'.PHP_EOL."Please set to \"{$key}\".");
 				};
 				break;
 
