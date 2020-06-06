@@ -144,10 +144,16 @@ class MYSQL
 		//	...
 		try{
 			//	...
+			if( empty($config['user']) or empty($config['password']) ){
+				D($config);
+				throw new \Exception("Empty user or password.");
+			}
+
+			//	...
 			$dsn      = self::DSN($config);
 			$option   = self::Option($config);
-			$user     = $config['user']     ?? null;
-			$password = $config['password'] ?? null;
+			$user     = $config['user'];
+			$password = $config['password'];
 		//	$database = $config['database'] ?? null;
 
 			//	...
