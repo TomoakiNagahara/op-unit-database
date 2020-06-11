@@ -60,6 +60,11 @@ class MYSQL
 		};
 
 		//	...
+		if( $config['host'] === 'localhost' and isset($config['port']) ){
+			D("If host is localhost, Use socket connect. Not use TCP/IP Port. (port={$config['port']})");
+		}
+
+		//	...
 		return $config;
 	}
 
