@@ -168,7 +168,7 @@ class MYSQL
 		}catch( \PDOException $e ){
 			require_once(__DIR__.'/SQL_PHP_PDO_Error.class.php');
 			SQL_PHP_PDO_Error::Auto('mysql', $e);
-		}catch( Exception $e ){
+		}catch( \Throwable $e ){
 			Notice::Set($e->getMessage());
 		};
 	}
