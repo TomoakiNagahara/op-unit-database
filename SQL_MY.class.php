@@ -184,8 +184,8 @@ class MYSQL
 		//	...
 		foreach( $records as $record ){
 			foreach( $record as $sql ){
-			//	$preg = "GRANT (.+) ON (.+)\.(.+) TO '(.+)'@'(.+)' IDENTIFIED BY PASSWORD '(.+)'";
-				$preg = "GRANT (.+) ON (.+)\.(.+) TO '(.+)'@'(.+)'";
+			//	$preg = "GRANT (.+) ON (.+)\.(.+) TO (.+)@(.+) IDENTIFIED BY PASSWORD '(.+)'";
+				$preg = "GRANT (.+) ON (.+)\.(.+) TO (.+)@(.+)";
 				$m    = null;
 				if(!preg_match("/$preg/i", $sql, $m) ){
 					Notice::Set("Unmatch: {$preg} → {$sql}");
@@ -204,6 +204,10 @@ class MYSQL
 				//	...
 				$database   = trim($database, '`');
 				$table      = trim($table   , '`');
+				/*
+				$user       = trim($user    , '`');
+				$host       = trim($host    , '`');
+				*/
 
 				//	...
 				foreach( explode(',', $privileges.',') as $privilege ){
