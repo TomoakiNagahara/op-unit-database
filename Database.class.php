@@ -626,6 +626,15 @@ class Database implements IF_DATABASE, IF_UNIT
 		return isset($result) ? $result: [];
 	}
 
+	/** Get SQL Server version.
+	 *
+	 * @return string
+	 */
+	function Version()
+	{
+		return $this->SQL('SELECT VERSION()')[0]['VERSION()'];
+	}
+
 	/** Debug
 	 *
 	 * @created   2020-02-10
