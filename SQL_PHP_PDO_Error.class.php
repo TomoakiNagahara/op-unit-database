@@ -41,7 +41,7 @@ class SQL_PHP_PDO_Error
 	 *
 	 * @param \PDOException $e
 	 */
-	static function Auto(string $prod, \PDOException $e)
+	static function Auto(array $config, \PDOException $e)
 	{
 		//	...
 		switch( $e->getCode() ){
