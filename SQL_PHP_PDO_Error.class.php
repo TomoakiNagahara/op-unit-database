@@ -54,6 +54,16 @@ class SQL_PHP_PDO_Error
 				break;
 
 			//	MySQL
+			case '1045':
+				$str = $e->getMessage();
+				//	Maybe this message is hard coding by PHP-PDO.
+				if( $config['host'] !== 'localhost' ){
+					$str = "Access denied: Host={$config['host']}, User={$config['user']}, Password={$config['password']}\n{$str}";
+				}
+				//	...
+				Notice::Set($str);
+				break;
+
 			case '2002':
 				$key = 'pdo_mysql.default_socket';
 				$ini = ini_get($key);
