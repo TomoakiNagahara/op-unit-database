@@ -69,6 +69,11 @@ class SQL_PHP_PDO_Error
 				$ini = ini_get($key);
 				$str = $e->getMessage();
 				if( $ini ){
+					//	Change message if host is localhost.
+					if( $config['host'] === 'localhost' ){
+						$str = "If you use \"localhost\" as the host name, socket communication will be used.\n{$str}";
+					}
+					//	...
 					Notice::Set($str);
 				}else{
 					Notice::Set('The path of socket is not set in "php.ini".'.PHP_EOL."Please set to \"{$key}\".");
