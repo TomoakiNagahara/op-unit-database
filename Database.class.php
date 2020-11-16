@@ -567,7 +567,21 @@ class Database implements IF_DATABASE, IF_UNIT
 		//	Generate result value by type.
 		switch( $type ){
 			case 'select':
+				//	...
 				$result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+				//	Count fields.
+				if( isset($result[0]) and count($result[0]) === 1 ){
+					$temp = [];
+					foreach( $result as $ar ){
+						foreach( $ar as  $v ){
+							$temp[] = $v;
+						}
+					}
+					$result = $temp;
+				}
+
+				//	...
 				if( strpos($query.' ', ' LIMIT 1 ') and $result ){
 					/* For QQL
 					if( count($result[0]) === 1 ){
@@ -578,6 +592,8 @@ class Database implements IF_DATABASE, IF_UNIT
 					*/
 					$result = $result[0];
 				}
+
+				//	...
 				break;
 			/*
 			case 'count':
