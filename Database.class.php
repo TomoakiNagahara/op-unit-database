@@ -55,11 +55,11 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	private $_config = [];
 
-	/** Stacking query history.
+	/** Stacking query history. for debug.
 	 *
 	 * @var array
 	 */
-	private $_queries = [];
+	static $_queries = [];
 
 	/** PHP Data Objects.
 	 *
@@ -170,7 +170,7 @@ class Database implements IF_DATABASE, IF_UNIT
 				require_once(__DIR__.'/SQL_MY.class.php');
 				$this->_config    = DATABASE\MYSQL::Config ($config);
 				$this->_PDO       = DATABASE\MYSQL::Connect($config);
-				$this->_queries[] = DATABASE\MYSQL::DSN    ($config);
+				self::$_queries[] = DATABASE\MYSQL::DSN    ($config);
 				break;
 
 			case 'pgsql':
@@ -503,7 +503,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		if( $query ){
 			return $this->SQL($query, $type);
 		}else{
-			return array_shift($this->_queries);
+			return array_shift(self::$_queries);
 		};
 		*/
 	}
@@ -547,7 +547,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		$query = trim($query);
 
 		//	Stacking query for developers.
-		$this->_queries[] = $query;
+		self::$_queries[] = $query;
 
 		//	Execute SQL statement.
 		$statement = $this->_PDO->query($query);
@@ -641,6 +641,6 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function Debug()
 	{
-		D( $this->_queries );
+		D( self::$_queries );
 	}
 }
