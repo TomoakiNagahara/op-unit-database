@@ -184,6 +184,10 @@ class MYSQL
 		//	...
 		foreach( $records as $record ){
 			foreach( $record as $sql ){
+				/*
+			//	$preg = "GRANT (.+) ON (.+)\.(.+) TO '(.+)'@'(.+)' IDENTIFIED BY PASSWORD '(.+)'";
+				$preg = "GRANT (.+) ON (.+)\.(.+) TO '(.+)'@'(.+)'";
+				*/
 			//	$preg = "GRANT (.+) ON (.+)\.(.+) TO (.+)@(.+) IDENTIFIED BY PASSWORD '(.+)'";
 				$preg = "GRANT (.+) ON (.+)\.(.+) TO (.+)@(.+)";
 				$m    = null;
