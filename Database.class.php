@@ -454,11 +454,16 @@ class Database implements IF_DATABASE, IF_UNIT
 	function Query(string $query='', string $type='')
 	{
 		//	...
+		return $this->SQL($query, $type);
+
+		/*
+		//	...
 		if( $query ){
 			return $this->SQL($query, $type);
 		}else{
 			return array_shift($this->_queries);
 		};
+		*/
 	}
 
 	/** Do QQL.
