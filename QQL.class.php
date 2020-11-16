@@ -39,8 +39,8 @@ class QQL
 
 	/** Parse option.
 	 *
-	 * @param  array  $options
-	 * @return array  $result
+	 * @param  array|string  $options
+	 * @return array         $result
 	 */
 	static private function _ParseOption($options=[])
 	{
@@ -53,7 +53,7 @@ class QQL
 		$result = ['','',''];
 
 		//	...
-		foreach( $options as $key => $val ){
+		foreach( $options ?? [] as $key => $val ){
 			switch( $key = trim($key) ){
 				case 'limit':
 					$result[0] = 'LIMIT '.(int)$val;
