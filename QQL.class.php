@@ -283,6 +283,7 @@ class QQL
 		//	...
 		$record = $_db->Query($query, 'select');
 
+		/*
 		//	QQL is " name <- t_table.id = $id " and limit is 1.
 		if( $limit === 1 ){
 			//	In case of empty.
@@ -296,6 +297,7 @@ class QQL
 				$record = array_shift($record);
 			};
 		};
+		*/
 
 		//	Result has many record, and single field.
 		if( is_array($record) and ($field !== '*') and (strpos($field, ',') === false) ){
