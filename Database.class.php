@@ -648,7 +648,7 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function Version()
 	{
-		return $this->SQL('SELECT VERSION()')[0]['VERSION()'];
+		return $this->SQL('SELECT VERSION()')[0];
 	}
 
 	/** Debug
