@@ -20,7 +20,10 @@ namespace OP;
 /* @var $form   UNIT\Form     */
 
 //	...
+Load('Args');
 $args = Args();
+
+throw new \Exception("The testcase is broken.");
 
 //	...
 $prod   = isset($args) ? ($args[2] ?? null): null;
