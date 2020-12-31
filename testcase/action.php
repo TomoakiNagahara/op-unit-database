@@ -20,7 +20,7 @@ namespace OP;
 /* @var $form   UNIT\Form     */
 
 //	...
-$args = $app->Args();
+$args = Args();
 
 //	...
 $prod   = isset($args) ? ($args[2] ?? null): null;
