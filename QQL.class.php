@@ -299,14 +299,22 @@ class QQL
 		};
 		*/
 
+		/*
 		//	Result has many record, and single field.
 		if( is_array($record) and ($field !== '*') and (strpos($field, ',') === false) ){
+			//	...
 			$result = [];
+
+			//	...
 			foreach( $record as $temp ){
-				$result[] = array_shift($temp);
+				//	...
+				$result[] = is_array($temp) ? array_shift($temp): $temp;
 			};
+
+			//	Overwrite
 			$record = $result;
 		};
+		*/
 
 		//	...
 		return $record;
