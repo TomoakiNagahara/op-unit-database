@@ -249,7 +249,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		//	...
 		if( is_string($config) ){
 			Unit::Load('QQL');
-			$config = \OP\UNIT\QQL::Parse($config);
+			$config = DATABASE\QQL::Parse($config);
 		};
 
 		//	...
