@@ -1,10 +1,9 @@
 <?php
-/**
- * unit-database:/QQL.class.php
+/** op-unit-database:/QQL.class.php
  *
  * @created   2017-01-24
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
@@ -26,7 +25,7 @@ use OP\IF_DATABASE;
  *
  * @created   2017-01-24
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */

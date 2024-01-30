@@ -1,10 +1,9 @@
 <?php
-/**
- * unit-database:/Create.class.php
+/** op-unit-database:/Create.class.php
  *
  * @creation  2018-12-19
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
@@ -26,7 +25,7 @@ use OP\IF_DATABASE;
  *
  * @creation  2018-12-19
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */

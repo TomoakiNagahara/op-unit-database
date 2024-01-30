@@ -1,10 +1,9 @@
 <?php
-/**
- * unit-database:/autoloader.php
+/** op-unit-database:/autoloader.php
  *
  * @created   2018-05-18
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */

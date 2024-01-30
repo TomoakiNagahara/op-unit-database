@@ -1,10 +1,9 @@
 <?php
-/**
- * unit-database:/SQL_PHP_PDO_Error.class.php
+/** op-unit-database:/SQL_PHP_PDO_Error.class.php
  *
  * @creation  2019-01-09
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
@@ -26,7 +25,7 @@ use OP\Notice;
  *
  * @creation  2019-01-09
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
