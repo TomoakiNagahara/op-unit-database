@@ -1,10 +1,9 @@
 <?php
-/**
- * unit-database:/index.php
+/** op-unit-database:/index.php
  *
  * @creation  2018-04-25
  * @version   1.0
- * @package   unit-dump
+ * @package   op-unit-dump
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */

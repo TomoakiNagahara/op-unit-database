@@ -1,6 +1,5 @@
 <?php
-/**
- * unit-database:/Database.class.php
+/** op-unit-database:/Database.class.php
  *
  * v1.0 Single file
  * v2.0 Class
@@ -11,7 +10,7 @@
  *
  * @creation  2018-04-20
  * @version   4.2
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
@@ -38,7 +37,7 @@ use OP\Unit;
  *
  * @creation  2018-04-20
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
