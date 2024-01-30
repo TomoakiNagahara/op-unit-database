@@ -1,10 +1,9 @@
 <?php
-/**
- * unit-database:/SQL_MY.class.php
+/** op-unit-database:/SQL_MY.class.php
  *
  * @creation  2019-01-07
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
@@ -28,7 +27,7 @@ use function OP\ConvertPath;
  *
  * @creation  2019-01-07
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */

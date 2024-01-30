@@ -1,10 +1,9 @@
 <?php
-/**
- * unit-database:/Create.class.php
+/** op-unit-database:/Create.class.php
  *
  * @creation  2019-01-18
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */
@@ -24,7 +23,7 @@ use OP\OP_CORE;
  *
  * @creation  2019-01-18
  * @version   1.0
- * @package   unit-database
+ * @package   op-unit-database
  * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
  * @copyright Tomoaki Nagahara All right reserved.
  */

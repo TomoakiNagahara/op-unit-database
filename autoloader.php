@@ -1,12 +1,10 @@
 <?php
-/**
- * unit-database:/autoloader.php
+/** op-unit-database:/autoloader.php
  *
  * @created   2018-05-18
- * @version   1.0
- * @package   unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
+ * @license   Apache-2.0
+ * @package   op-unit-database-ci
+ * @copyright (C) 2025 Tomoaki Nagahara
  */
 //	...
 spl_autoload_register( function($name){
