@@ -253,7 +253,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		//	...
 		if( is_string($config) ){
 			Unit::Load('QQL');
-			$config = \OP\UNIT\QQL::Parse($config);
+			$config = DATABASE\QQL::Parse($config);
 		};
 
 		//	...
@@ -610,7 +610,7 @@ class Database implements IF_DATABASE, IF_UNIT
 
 			case 'show':
 				include_once(__DIR__.'/Show.class.php');
-				$result = Database\Show::Get( $statement->fetchAll(\PDO::FETCH_ASSOC), $query );
+				$result = DATABASE\Show::Get( $statement->fetchAll(\PDO::FETCH_ASSOC), $query );
 				break;
 
 			case 'set':
