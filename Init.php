@@ -17,3 +17,8 @@ declare(strict_types=1);
  *
  */
 namespace OP;
+
+/** Git hooks
+ *
+ */
+include(__DIR__.'/.Init/GitHooks.php');
