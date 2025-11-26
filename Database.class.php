@@ -32,19 +32,21 @@ use OP\OP_UNIT;
 use OP\IF_UNIT;
 use OP\IF_DATABASE;
 use OP\Unit;
+use OP\OP_CI;
 
-/** Database
+/**	Database
  *
  * @creation  2018-04-20
  */
 class Database implements IF_DATABASE, IF_UNIT
 {
-	/** trait
+	/**	trait
 	 *
 	 */
 	use OP_CORE, OP_UNIT;
+	use OP_CI;
 
-	/** Connection configuration.
+	/**	Connection configuration.
 	 *
 	 * @var array
 	 */
