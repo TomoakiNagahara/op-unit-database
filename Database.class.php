@@ -401,6 +401,12 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function Transaction()
 	{
+		//	...
+		if( empty($this->_PDO) ){
+			return;
+		}
+
+		//	...
 		$this->_debug['SQL'][] = 'Transaction Begin';
 		return $this->_PDO->beginTransaction();
 	}
@@ -413,6 +419,12 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function Commit()
 	{
+		//	...
+		if( empty($this->_PDO) ){
+			return;
+		}
+
+		//	...
 		$this->_debug['SQL'][] = 'Transaction Commit';
 		return $this->_PDO->commit();
 	}
@@ -425,6 +437,12 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function Rollback()
 	{
+		//	...
+		if( empty($this->_PDO) ){
+			return;
+		}
+
+		//	...
 		$this->_debug['SQL'][] = 'Transaction Rollback';
 		return $this->_PDO->rollBack();
 	}
@@ -437,6 +455,11 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function Quote($value)
 	{
+		//	...
+		if( empty($this->_PDO) ){
+			return;
+		}
+
 		//	...
 		switch( $prod = $this->_config['prod'] ){
 			case 'mysql':
@@ -639,6 +662,12 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function Debug()
 	{
+		//	...
+		if( OP()->isCI() ){
+			return;
+		}
+
+		//	...
 		D( self::$_queries );
 	}
 }
