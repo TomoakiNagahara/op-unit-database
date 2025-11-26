@@ -40,6 +40,12 @@ class ErrorInfo
 	 */
 	static function Set($errorinfo, $backtrace)
 	{
+		//	...
+		if( OP()->isCI() ){
+			return;
+		}
+
+		//	...
 		$state = $errorinfo[0];
 		$errno = $errorinfo[1];
 		$error = $errorinfo[2];
