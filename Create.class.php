@@ -56,6 +56,11 @@ class Create
 	function User($config)
 	{
 		//	...
+		if( empty($this->_DB) ){
+			return;
+		}
+
+		//	...
 		$sql = '\OP\UNIT\SQL\User'::Create($config, $this->_DB);
 
 		//	...
@@ -71,6 +76,11 @@ class Create
 	 */
 	function Database($config)
 	{
+		//	...
+		if( empty($this->_DB) ){
+			return;
+		}
+
 		//	...
 		if( $this->_DB->Config()['prod'] === 'sqlite' ){
 			require_once(__DIR__.'/SQL_LITE.class.php');
@@ -95,6 +105,11 @@ class Create
 	function Table($config)
 	{
 		//	...
+		if( empty($this->_DB) ){
+			return;
+		}
+
+		//	...
 		$sql = '\OP\UNIT\SQL\Table'::Create($config, $this->_DB);
 
 		//	...
@@ -117,6 +132,11 @@ class Create
 	private function _Field(array $config)
 	{
 		//	...
+		if( empty($this->_DB) ){
+			return;
+		}
+
+		//	...
 		foreach( ['field','fields','column','columns'] as $key ){
 			if( isset($config[$key]) ){
 				return $config[$key];
@@ -131,6 +151,11 @@ class Create
 	 */
 	private function _SQLite(array $config):bool
 	{
+		//	...
+		if( empty($this->_DB) ){
+			return false;
+		}
+
 		//	...
 		$statement = '';
 
