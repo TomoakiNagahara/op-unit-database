@@ -83,8 +83,16 @@ class SQL_LITE
 	static function DSN(array $config)
 	{
 		//	...
-		$prod = $config['prod'];
-		$path = $config['path'];
+		$prod = $config['prod'] ?? '';
+		$path = $config['path'] ?? '';
+
+		//	...
+		if(!$path ){
+			OP()->Error("The path is not set.");
+			return;
+		}
+
+		//	...
 		$dsn  = "{$prod}:{$path}";
 
 		//	...
@@ -102,7 +110,9 @@ class SQL_LITE
 		//	...
 		try{
 			//	...
-			$dsn      = self::DSN($config);
+			if(!$dsn      = self::DSN($config) ){
+				return;
+			}
 
 			//	...
 			return new \PDO($dsn);
@@ -124,6 +134,7 @@ class SQL_LITE
 	{
 		//	...
 		if(!$path = $config['path'] ?? null ){
+			OP()->Error("The path is not set.");
 			return false;
 		};
 
