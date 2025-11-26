@@ -85,7 +85,7 @@ class Database implements IF_DATABASE, IF_UNIT
 	function __destruct()
 	{
 		//	Check is admin.
-		if(!\OP\Env::isAdmin() ){
+		if(!OP()->isAdmin() ){
 			return;
 		};
 	}
