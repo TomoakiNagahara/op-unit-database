@@ -88,18 +88,6 @@ class Database implements IF_DATABASE, IF_UNIT
 		if(!\OP\Env::isAdmin() ){
 			return;
 		};
-
-		//	Check if empty debug.
-		if( empty($_GET['debug']) ){
-			return;
-		};
-
-		//	...
-
-		//	Check by Debug::isDebug().
-		if( \OP\Debug::isDebug( get_class($this) ) ){
-			$this->Debug();
-		};
 	}
 
 	/** Return instantiated PDO instance. (So-called singleton)
