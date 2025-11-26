@@ -18,6 +18,7 @@ namespace OP\UNIT\DATABASE;
  * @creation  2019-03-04
  */
 use OP\OP_CORE;
+use OP\OP_CI;
 use OP\IF_DATABASE;
 
 /** Drop
@@ -30,6 +31,7 @@ class Drop
 	 *
 	 */
 	use OP_CORE;
+	use OP_CI;
 
 	/** Database object.
 	 *
