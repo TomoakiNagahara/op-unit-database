@@ -26,7 +26,7 @@ use function OP\ConvertPath;
  *
  * @creation  2019-01-07
  */
-class MYSQL
+class SQL_MY
 {
 	/**	trait
 	 *
