@@ -1,18 +1,18 @@
 <?php
-/** op-unit-database:/Database.class.php
+/**	op-unit-database:/Database.class.php
  *
  * v1.0 Single file
  * v2.0 Class
  * v3.0 onepiece-framework
  * v4.0 unit Gen1 2017
  * v4.1 unit Gen2 2018
- * v4.2 unit Gen2 2019
+ * v4.2 unit Gen3 2019
  *
  * @creation  2018-04-20
  * @version   4.2
  * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
+ * @author    Tomoaki Nagahara
+ * @copyright Tomoaki Nagahara All rights reserved.
  */
 
 /** namespace
@@ -36,10 +36,6 @@ use OP\Unit;
 /** Database
  *
  * @creation  2018-04-20
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
  */
 class Database implements IF_DATABASE, IF_UNIT
 {

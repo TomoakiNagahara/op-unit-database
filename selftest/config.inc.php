@@ -15,10 +15,10 @@
  */
 namespace OP;
 
-/* @var $selftest \OP\UNIT\Selftest          */
+/* @var $selftest IF_SELFTEST          */
 $selftest = Unit::Instantiate('Selftest');
 
-/* @var $configer \OP\UNIT\SELFTEST\Configer */
+/* @var $configer IF_SELFTEST_CONFIG */
 $configer = $selftest->Configer();
 
 //	...

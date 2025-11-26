@@ -1,42 +1,38 @@
 <?php
-/** op-unit-database:/QQL.class.php
+/**	op-unit-database:/QQL.class.php
  *
  * @created   2017-01-24
  * @version   1.0
  * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
+ * @author    Tomoaki Nagahara
+ * @copyright Tomoaki Nagahara All rights reserved.
  */
 
-/** namespace
+/**	namespace
  *
  * @created   2017-12-18
  */
 namespace OP\UNIT\DATABASE;
 
-/** Used class
+/**	Used class
  *
  * @creation  2019-03-04
  */
 use OP\OP_CORE;
 use OP\IF_DATABASE;
 
-/** QQL
+/**	QQL
  *
  * @created   2017-01-24
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
  */
 class QQL
 {
-	/** trait
+	/**	trait
 	 *
 	 */
 	use OP_CORE;
 
-	/** Parse option.
+	/**	Parse option.
 	 *
 	 * @param  array|string  $options
 	 * @return array         $result
@@ -78,7 +74,7 @@ class QQL
 		return $result;
 	}
 
-	/** Parse option string.
+	/**	Parse option string.
 	 *
 	 * @param  string $options
 	 * @return array  $result
@@ -145,7 +141,7 @@ class QQL
 		return $field;
 	}
 
-	/** Convert to SQL from QQL.
+	/**	Convert to SQL from QQL.
 	 *
 	 * @param   string      $qql
 	 * @param   string      $opt
@@ -257,7 +253,7 @@ class QQL
 		];
 	}
 
-	/** Execute Select.
+	/**	Execute Select.
 	 *
 	 * @param   array       $select
 	 * @param   IF_DATABASE $_db
@@ -319,7 +315,7 @@ class QQL
 		return $record;
 	}
 
-	/** Execute QQL.
+	/**	Execute QQL.
 	 *
 	 * @param   string       $qql
 	 * @param   string|array $opt

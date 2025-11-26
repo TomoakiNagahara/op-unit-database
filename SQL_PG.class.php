@@ -1,42 +1,38 @@
 <?php
-/** op-unit-database:/SQL_PG.class.php
+/**	op-unit-database:/SQL_PG.class.php
  *
  * @creation  2019-01-07
  * @version   1.0
  * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
+ * @author    Tomoaki Nagahara
+ * @copyright Tomoaki Nagahara All rights reserved.
  */
 
-/** namespace
+/**	namespace
  *
  * @creation  2019-01-07
  */
 namespace OP\UNIT\DATABASE;
 
-/** Used class
+/**	Used class
  *
  * @creation  2019-03-04
  */
 use OP\OP_CORE;
 use OP\Notice;
 
-/** PGSQL
+/**	PGSQL
  *
  * @creation  2019-01-07
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
  */
 class PGSQL
 {
-	/** trait
+	/**	trait
 	 *
 	 */
 	use OP_CORE;
 
-	/** Config
+	/**	Config
 	 *
 	 * @param	 array		 $config
 	 * @throws	\Exception	 $e
@@ -55,7 +51,7 @@ class PGSQL
 		return $config;
 	}
 
-	/** Data Source Name
+	/**	Data Source Name
 	 *
 	 * @param	 array		 $config
 	 * @throws	\Exception	 $e
@@ -83,7 +79,7 @@ class PGSQL
 		return $dsn;
 	}
 
-	/** Option
+	/**	Option
 	 *
 	 * @param	 array		 $config
 	 * @throws	\Exception	 $e
@@ -94,7 +90,7 @@ class PGSQL
 		return null;
 	}
 
-	/** Connect
+	/**	Connect
 	 *
 	 * @param	 array		 $config
 	 * @throws	\Exception	 $e

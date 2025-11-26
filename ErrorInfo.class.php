@@ -4,8 +4,8 @@
  * @creation  2018-05-08
  * @version   1.0
  * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
+ * @author    Tomoaki Nagahara
+ * @copyright Tomoaki Nagahara All rights reserved.
  */
 
 /** namespace
@@ -24,10 +24,6 @@ use OP\Notice;
 /** Database
  *
  * @creation  2018-05-08
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
  */
 class ErrorInfo
 {
