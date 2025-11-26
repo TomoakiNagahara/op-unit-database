@@ -19,6 +19,7 @@ namespace OP\UNIT\DATABASE;
  */
 use Exception;
 use OP\OP_CORE;
+use OP\OP_CI;
 use OP\Notice;
 use function OP\ConvertPath;
 
@@ -32,6 +33,7 @@ class SQL_MY
 	 *
 	 */
 	use OP_CORE;
+	use OP_CI;
 
 	/**	Config
 	 *
