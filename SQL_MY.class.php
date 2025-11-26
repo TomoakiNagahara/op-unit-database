@@ -46,7 +46,6 @@ class SQL_MY
 		//	...
 		if(!defined('\PDO::MYSQL_ATTR_INIT_COMMAND') ){
 			$module = 'mysql';
-			include( ConvertPath('asset:/bootstrap/php/content.phtml') );
 			throw new Exception("php-{$module} is not installed.");
 		};
 
@@ -73,7 +72,9 @@ class SQL_MY
 	static function DSN(array $config)
 	{
 		//	...
-		$prod = $config['prod'];
+		if(!$prod = $config['prod'] ?? null ){
+			throw new Exception("prod is empty.");
+		}
 
 		/**	Connect to an ODBC database using driver invocation
 		 *
@@ -147,7 +148,6 @@ class SQL_MY
 		try{
 			//	...
 			if( empty($config['user']) or empty($config['password']) ){
-				D($config);
 				throw new \Exception("Empty user or password.");
 			}
 
