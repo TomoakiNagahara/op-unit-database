@@ -151,6 +151,12 @@ class QQL
 	 */
 	static function Parse($qql, $opt, $_db)
 	{
+		//	...
+		if( empty($_db) ){
+			return;
+		}
+
+		//	...
 		$field  = '*';
 		$dbname = null;
 		$table  = null;
@@ -263,6 +269,11 @@ class QQL
 	static function Select($select, $_db)
 	{
 		//	...
+		if( empty($_db) ){
+			return;
+		}
+
+		//	...
 		$database = $table = $field = $where = $order = $limit = $offset = $group = null;
 
 		//	...
@@ -325,6 +336,11 @@ class QQL
 	 */
 	static function Execute($qql, $opt, $DB)
 	{
+		//	...
+		if( empty($DB) ){
+			return;
+		}
+
 		//	...
 		$select = self::Parse($qql, $opt, $DB);
 
