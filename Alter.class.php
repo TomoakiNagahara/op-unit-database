@@ -1,5 +1,5 @@
 <?php
-/** op-unit-database:/Create.class.php
+/**	op-unit-database:/Alter.class.php
  *
  * @creation  2019-01-18
  * @version   1.0
@@ -13,30 +13,32 @@
  */
 namespace OP\UNIT\DATABASE;
 
-/** Used class
+/**	Use
  *
  * @creation  2019-03-04
  */
 use OP\OP_CORE;
+use OP\OP_CI;
 
-/** Database
+/**	Alter
  *
  * @creation  2019-01-18
  */
 class Alter
 {
-	/** trait
+	/**	trait
 	 *
 	 */
 	use OP_CORE;
+	use OP_CI;
 
-	/** Database object.
+	/**	Database object.
 	 *
 	 * @var \OP\UNIT\Database
 	 */
 	private $_DB;
 
-	/** Construct
+	/**	Construct
 	 *
 	 * @param \OP\UNIT\Database $DB
 	 */
