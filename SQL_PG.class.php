@@ -24,7 +24,7 @@ use OP\Notice;
  *
  * @creation  2019-01-07
  */
-class PGSQL
+class SQL_PG
 {
 	/**	trait
 	 *
