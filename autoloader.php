@@ -4,8 +4,8 @@
  * @created   2018-05-18
  * @version   1.0
  * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
+ * @author    Tomoaki Nagahara
+ * @copyright Tomoaki Nagahara All rights reserved.
  */
 //	...
 spl_autoload_register( function($name){

@@ -1,5 +1,5 @@
 <?php
-/** op-unit-database:/SQL_PHP_PDO_Error.class.php
+/**	op-unit-database:/SQL_PHP_PDO_Error.class.php
  *
  * @creation  2019-01-09
  * @version   1.0
@@ -8,20 +8,20 @@
  * @copyright Tomoaki Nagahara All right reserved.
  */
 
-/** namespace
+/**	namespace
  *
  * @creation  2019-01-09
  */
 namespace OP\UNIT\DATABASE;
 
-/** Used class
+/**	Used class
  *
  * @creation  2019-03-04
  */
 use OP\OP_CORE;
 use OP\Notice;
 
-/** SQL_PHP_PDO_Error
+/**	SQL_PHP_PDO_Error
  *
  * @creation  2019-01-09
  * @version   1.0
@@ -31,12 +31,12 @@ use OP\Notice;
  */
 class SQL_PHP_PDO_Error
 {
-	/** trait
+	/**	trait
 	 *
 	 */
 	use OP_CORE;
 
-	/** PHP PDO Error
+	/**	PHP PDO Error
 	 *
 	 * @param \PDOException $e
 	 */

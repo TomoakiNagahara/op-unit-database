@@ -1,20 +1,20 @@
 <?php
-/** op-unit-database:/SQL_MY.class.php
+/**	op-unit-database:/SQL_MY.class.php
  *
  * @creation  2019-01-07
  * @version   1.0
  * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
+ * @author    Tomoaki Nagahara
+ * @copyright Tomoaki Nagahara All rights reserved.
  */
 
-/** namespace
+/**	namespace
  *
  * @creation  2019-01-07
  */
 namespace OP\UNIT\DATABASE;
 
-/** Used class
+/**	Used class
  *
  * @creation  2019-03-04
  */
@@ -23,22 +23,18 @@ use OP\OP_CORE;
 use OP\Notice;
 use function OP\ConvertPath;
 
-/** MYSQL
+/**	MYSQL
  *
  * @creation  2019-01-07
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
  */
 class MYSQL
 {
-	/** trait
+	/**	trait
 	 *
 	 */
 	use OP_CORE;
 
-	/** Config
+	/**	Config
 	 *
 	 * @param	 array		 $config
 	 * @throws	 Exception	 $e
@@ -67,7 +63,7 @@ class MYSQL
 		return $config;
 	}
 
-	/** Data Source Name
+	/**	Data Source Name
 	 *
 	 * @param	 array		 $config
 	 * @throws	 Exception	 $e
@@ -78,7 +74,7 @@ class MYSQL
 		//	...
 		$prod = $config['prod'];
 
-		/** Connect to an ODBC database using driver invocation
+		/**	Connect to an ODBC database using driver invocation
 		 *
 		 * @see http://php.net/manual/en/pdo.construct.php
 		 */
@@ -111,7 +107,7 @@ class MYSQL
 		return $dsn;
 	}
 
-	/** Option
+	/**	Option
 	 *
 	 * @param	 array		 $config
 	 * @throws	 Exception	 $e
@@ -138,7 +134,7 @@ class MYSQL
 		return $option;
 	}
 
-	/** Connect
+	/**	Connect
 	 *
 	 * @param	 array		 $config
 	 * @throws	 Exception	 $e
@@ -172,7 +168,7 @@ class MYSQL
 		};
 	}
 
-	/** Parse grant
+	/**	Parse grant
 	 *
 	 */
 	static function Grant($records)
