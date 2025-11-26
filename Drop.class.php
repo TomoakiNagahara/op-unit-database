@@ -55,6 +55,11 @@ class Drop
 	function User($config)
 	{
 		//	...
+		if( empty($this->_DB) ){
+			return;
+		}
+
+		//	...
 		$sql = '\OP\UNIT\SQL\User'::Drop($config, $this->_DB);
 
 		//	...
@@ -71,6 +76,11 @@ class Drop
 	function Database($config)
 	{
 		//	...
+		if( empty($this->_DB) ){
+			return;
+		}
+
+		//	...
 		$sql = '\OP\UNIT\SQL\Database'::Drop($config, $this->_DB);
 
 		//	...
@@ -86,6 +96,11 @@ class Drop
 	 */
 	function Table($config)
 	{
+		//	...
+		if( empty($this->_DB) ){
+			return;
+		}
+
 		//	...
 		$sql = '\OP\UNIT\SQL\Table'::Drop($config, $this->_DB);
 
