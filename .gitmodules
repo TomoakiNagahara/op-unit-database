@@ -1,3 +1,6 @@
 [submodule "ci"]
 	path = ci
 	url = https://github.com/onepiece-framework/op-unit-database-ci.git
+[submodule "testcases"]
+	path = testcases
+	url = https://github.com/onepiece-framework/op-unit-database-testcase.git
