@@ -18,6 +18,7 @@ namespace OP\UNIT\DATABASE;
  * @creation  2019-03-04
  */
 use OP\OP_CORE;
+use OP\OP_CI;
 
 /**	Show
  *
@@ -29,6 +30,7 @@ class Show
 	 *
 	 */
 	use OP_CORE;
+	use OP_CI;
 
 	/** Get show result.
 	 *
