@@ -18,15 +18,12 @@ namespace OP\UNIT\DATABASE;
  * @creation  2019-03-04
  */
 use OP\OP_CORE;
+use OP\OP_CI;
 use OP\Notice;
 
 /**	SQL_PHP_PDO_Error
  *
  * @creation  2019-01-09
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
  */
 class SQL_PHP_PDO_Error
 {
@@ -34,6 +31,7 @@ class SQL_PHP_PDO_Error
 	 *
 	 */
 	use OP_CORE;
+	use OP_CI;
 
 	/**	PHP PDO Error
 	 *
