@@ -44,7 +44,6 @@ class SQL_PG
 		//	...
 		if(!defined('\PDO::PGSQL_ATTR_DISABLE_PREPARES') ){
 			$module = 'postgresql';
-			include( ConvertPath('asset:/bootstrap/php/content.phtml') );
 			throw new \Exception("php-{$module} is not installed.");
 		};
 
@@ -61,7 +60,9 @@ class SQL_PG
 	static function DSN(array $config)
 	{
 		//	...
-		$prod = $config['prod'];
+		if(!$prod = $config['prod'] ?? null ){
+			throw new \Exception("prod is empty.");
+		}
 
 		//	...
 		if(!$host = $config['host'] ?? null ){
@@ -101,6 +102,12 @@ class SQL_PG
 	{
 		//	...
 		try{
+			//	...
+			if( empty($config['user']) or empty($config['password']) ){
+				OP()->Error("Empty user or password.");
+				return;
+			}
+
 			//	...
 			$dsn      = self::DSN($config);
 			$option   = self::Option($config);
