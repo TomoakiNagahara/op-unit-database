@@ -271,6 +271,6 @@ class Show
 	 */
 	static private function _Grant(array $records)
 	{
-		return MYSQL::Grant($records);
+		return SQL_MY::Grant($records);
 	}
 }
