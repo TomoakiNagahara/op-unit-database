@@ -8,20 +8,24 @@
  * v4.1 unit Gen2 2018
  * v4.2 unit Gen3 2019
  *
- * @creation  2018-04-20
+ * @created   2018-04-20
  * @version   4.2
  * @package   op-unit-database
- * @author    Tomoaki Nagahara
- * @copyright Tomoaki Nagahara All rights reserved.
+ * @copyright 2006 Tomoaki Nagahara All Rights Reserved.
  */
 
-/** namespace
+/**	Declare strict type
+ *
+ */
+declare(strict_types=1);
+
+/**	Namespace
  *
  * @created   2018-04-25
  */
 namespace OP\UNIT;
 
-/** Used class
+/**	Use
  *
  * @created   2019-03-04
  */
@@ -29,14 +33,14 @@ use PDO;
 use Exception;
 use OP\OP_CORE;
 use OP\OP_UNIT;
+use OP\OP_CI;
 use OP\IF_UNIT;
 use OP\IF_DATABASE;
 use OP\Unit;
-use OP\OP_CI;
 
 /**	Database
  *
- * @creation  2018-04-20
+ * @created   2018-04-20
  */
 class Database implements IF_DATABASE, IF_UNIT
 {
