@@ -153,21 +153,21 @@ class Database implements IF_DATABASE, IF_UNIT
 		switch( $prod = $config['prod'] ){
 			case 'mysql':
 				require_once(__DIR__.'/SQL_MY.class.php');
-				$this->_config    = DATABASE\MYSQL::Config ($config);
-				$this->_PDO       = DATABASE\MYSQL::Connect($config);
-				self::$_queries[] = DATABASE\MYSQL::DSN    ($config);
+				$this->_config    = DATABASE\SQL_MY::Config ($config);
+				$this->_PDO       = DATABASE\SQL_MY::Connect($config);
+				self::$_queries[] = DATABASE\SQL_MY::DSN    ($config);
 				break;
 
 			case 'pgsql':
 				require_once(__DIR__.'/SQL_PG.class.php');
-				$this->_config = DATABASE\PGSQL::Config ($config);
-				$this->_PDO    = DATABASE\PGSQL::Connect($config);
+				$this->_config = DATABASE\SQL_PG::Config ($config);
+				$this->_PDO    = DATABASE\SQL_PG::Connect($config);
 				break;
 
 			case 'sqlite':
 				require_once(__DIR__.'/SQL_LITE.class.php');
-				$this->_config = DATABASE\SQLITE::Config ($config);
-				$this->_PDO    = DATABASE\SQLITE::Connect($config);
+				$this->_config = DATABASE\SQL_LITE::Config ($config);
+				$this->_PDO    = DATABASE\SQL_LITE::Connect($config);
 				break;
 
 			default:
