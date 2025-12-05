@@ -9,9 +9,10 @@
  * v4.2 unit Gen3 2019
  *
  * @created   2018-04-20
+ * @license   Apache-2.0
  * @version   4.2
  * @package   op-unit-database
- * @copyright 2006 Tomoaki Nagahara All Rights Reserved.
+ * @copyright (C) 2007 Tomoaki Nagahara
  */
 
 /**	Declare strict type
@@ -56,25 +57,19 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	private $_config = [];
 
-	/** Stacking query history. for debug.
+	/**	Stacking query history. for debug.
 	 *
 	 * @var array
 	 */
 	static $_queries = [];
 
-	/** PHP Data Objects.
-	 *
-	 * @var PDO
-	 */
-	private $_PDO;
-
-	/** SQL generator.
+	/**	SQL generator.
 	 *
 	 * @var \OP\UNIT\SQL
 	 */
 	private $_SQL;
 
-	/** Construct
+	/**	Construct
 	 *
 	 */
 	function __construct()
@@ -84,7 +79,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		$this->_SQL->DB($this);
 	}
 
-	/** Destruct
+	/**	Destruct
 	 *
 	 * @created   2020-02-10
 	 */
@@ -96,102 +91,128 @@ class Database implements IF_DATABASE, IF_UNIT
 		};
 	}
 
-	/** Return instantiated PDO instance. (So-called singleton)
+	/**	Store PDO object access only internal.
 	 *
-	 * @return \PDO
-	 */
-	function PDO()
-	{
-		return $this->_PDO;
-	}
-
-	/** Return connection configuration.
+	 * Does not access external.
+	 * It is isolated from the outside world to prevent unauthorized updates.
 	 *
-	 * @see		 IF_DATABASE::Config()
-	 * @return	 array		 $config
 	 */
-	function Config()
-	{
-		return $this->_config;
-	}
-
-	/** If is connect.
-	 *
-	 * @return	 boolean
-	 */
-	function isConnect()
-	{
-		return $this->_PDO ? true: false;
-	}
-
-	/** Connect database server.
-	 *
-	 * @param	 array		 $config
-	 * @return	 boolean	 $io
-	 */
-	function Connect($config)
+	static private function _PDO( string $label, ?\PDO $pdo=null ) : \PDO | bool
 	{
 		//	...
-		if( empty($config) ){
-			throw new \Exception("Database connect config is empty.");
-		};
+		static $_PDO = [];
 
 		//	...
-		if( empty($config['prod']) and $config['scheme'] ?? null ){
-			$config['prod'] = $config['scheme'];
-		};
-
-		//	...
-		$config['prod'] = strtolower($config['prod']);
-
-		//	...
-		if( empty($config['database']) ){
+		if( $pdo ){
 			//	...
-			if( isset($config['name']) ){
-				//	...
-				$config['database'] = $config['name'];
+			if( isset($_PDO[$label]) ){
+				OP()->Error("A PDO with this label name is already registered: {$label}");
+				return false;
+			}else{
+				$_PDO[$label] = $pdo;
+				return true;
 			}
 		}
 
 		//	...
-		switch( $prod = $config['prod'] ){
+		if(!isset($_PDO[$label]) ){
+			OP()->Error("No PDO with this label name has been set: {$label}");
+			return false;
+		}
+
+		//	...
+		if( empty($_PDO[$label]) ){
+			OP()->Error("The PDO for this label name is empty: {$label}");
+			return false;
+		}
+
+		//	...
+		return $_PDO[$label] ?? false;
+	}
+
+	/**	It is possible to obtain a PDO object externally.
+	 *
+	 * @return \PDO
+	 */
+	static public function PDO( string $label='default' ) : \PDO | bool | null
+	{
+		return self::_PDO($label);
+	}
+
+	/**	Return connection configuration.
+	 *
+	 * @see		 IF_DATABASE::Config()
+	 * @return	 array		 $config
+	 */
+	function Config( string $label='default' ) : array | null
+	{
+		return $this->_config[$label] ?? null;
+	}
+
+	/**	If is connect.
+	 *
+	 * @return	 boolean
+	 */
+	function isConnect( string $label='default' ) : bool
+	{
+		return $this->_PDO($label) ? true: false;
+	}
+
+	/**	Connect database server.
+	 *
+	 * @param	 array		 $config
+	 * @return	 boolean	 $io
+	 */
+	function Connect( array $config, string $label='default' ) : bool
+	{
+		//	...
+		switch( $driver = strtolower($config['driver'] ?? '(empty)') ){
 			case 'mysql':
 				require_once(__DIR__.'/SQL_MY.class.php');
-				$this->_config    = DATABASE\SQL_MY::Config ($config);
-				$this->_PDO       = DATABASE\SQL_MY::Connect($config);
+				$_config    = DATABASE\SQL_MY::Config ($config);
+				$_PDO       = DATABASE\SQL_MY::Connect($config);
 				self::$_queries[] = DATABASE\SQL_MY::DSN    ($config);
 				break;
 
 			case 'pgsql':
 				require_once(__DIR__.'/SQL_PG.class.php');
-				$this->_config = DATABASE\SQL_PG::Config ($config);
-				$this->_PDO    = DATABASE\SQL_PG::Connect($config);
+				$_config = DATABASE\SQL_PG::Config ($config);
+				$_PDO    = DATABASE\SQL_PG::Connect($config);
 				break;
 
 			case 'sqlite':
 				require_once(__DIR__.'/SQL_LITE.class.php');
-				$this->_config = DATABASE\SQL_LITE::Config ($config);
-				$this->_PDO    = DATABASE\SQL_LITE::Connect($config);
+				$_config = DATABASE\SQL_LITE::Config ($config);
+				$_PDO    = DATABASE\SQL_LITE::Connect($config);
 				break;
 
 			default:
-				if( empty($prod) ){
-					$prod = 'empty';
-				};
-				throw new \Exception("Has not been support this product. ($prod)");
+				OP()->Error("This driver is not support: $driver");
+				return false;
 		};
 
 		//	...
-		return $this->_PDO ? true: false;
+		$this->_config[$label] = $_config;
+		//	...
+		$this->_PDO( $label, $_PDO );
+
+		//	...
+		return $_PDO ? true: false;
 	}
 
-	/** Set/Get last time used database name.
+	/**	Set/Get last time used database name.
 	 *
+	 * @deprecated 2025-12-01
 	 * @param  string $database
 	 * @return string $database
 	 */
 	function Database(string $database=null)
 	{
+		/*
+		//	...
+		OP()->Error('This function has been discontinued. Please manage connected databases by label names.');
+		*/
+
 		//	...
 		if( $database ){
 			//	...
@@ -208,7 +229,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		return $this->_config['database'];
 	}
 
-	/** Create
+	/**	Create
 	 *
 	 */
 	function Create()
@@ -216,7 +237,7 @@ class Database implements IF_DATABASE, IF_UNIT
 
 	}
 
-	/** Change
+	/**	Change
 	 *
 	 */
 	function Change()
@@ -224,7 +245,7 @@ class Database implements IF_DATABASE, IF_UNIT
 
 	}
 
-	/** Drop
+	/**	Drop
 	 *
 	 */
 	function Drop()
@@ -232,13 +253,13 @@ class Database implements IF_DATABASE, IF_UNIT
 
 	}
 
-	/** Count number of record at conditions.
+	/**	Count number of record at conditions.
 	 *
 	 * @see		 IF_DATABASE::Count()
 	 * @param	 array		 $config
 	 * @return	 integer	 $count
 	 */
-	function Count($config)
+	function Count( array $config, string $label = 'default' ) : int
 	{
 		//	...
 		if( is_string($config) ){
@@ -260,7 +281,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		return (int)$result;
 	}
 
-	/** Select record at conditions.
+	/**	Select record at conditions.
 	 *
 	 * <pre>
 	 * //	Configuration.
@@ -277,7 +298,7 @@ class Database implements IF_DATABASE, IF_UNIT
 	 * @param	 array		 $config
 	 * @return	 array		 $record
 	 */
-	function Select($config)
+	function Select( array $config, string $label = 'default' )
 	{
 		//	Cache feature.
 		if( isset($config['cache']) ){
@@ -319,7 +340,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		return $result;
 	}
 
-	/** Insert new record.
+	/**	Insert new record.
 	 *
 	 * <pre>
 	 * //	Configuration.
@@ -335,16 +356,18 @@ class Database implements IF_DATABASE, IF_UNIT
 	 * @param	 array		 $config
 	 * @return	 integer	 $new_id
 	 */
-	function Insert($config)
+	function Insert( array $config, string $label = 'default' )
 	{
 		//	...
-		$sql = $this->_SQL->DML($this)->Insert($config);
+		if(!$sql = $this->_SQL->DML($this)->Insert($config) ){
+			return;
+		}
 
 		//	...
 		return $this->SQL($sql, 'insert');
 	}
 
-	/** Update record at conditions.
+	/**	Update record at conditions.
 	 *
 	 * <pre>
 	 * //	Configuration.
@@ -362,16 +385,18 @@ class Database implements IF_DATABASE, IF_UNIT
 	 * @param	 array		 $config
 	 * @return	 integer	 $number
 	 */
-	function Update($config)
+	function Update( array $config, string $label = 'default' )
 	{
 		//	...
-		$sql = $this->_SQL->DML($this)->Update($config);
+		if(!$sql = $this->_SQL->DML($this)->Update($config) ){
+			return;
+		}
 
 		//	...
 		return $this->SQL($sql, 'update');
 	}
 
-	/** Delete record at conditions.
+	/**	Delete record at conditions.
 	 *
 	 * <pre>
 	 * //	Configuration.
@@ -388,84 +413,82 @@ class Database implements IF_DATABASE, IF_UNIT
 	 * @param	 array		 $config
 	 * @return	 integer	 $number
 	 */
-	function Delete($config)
+	function Delete( array $config, string $label = 'default' )
 	{
 		//	...
-		$sql = $this->_SQL->DML($this)->Delete($config);
+		if(!$sql = $this->_SQL->DML($this)->Delete($config) ){
+			return;
+		}
 
 		//	...
 		return $this->SQL($sql, 'delete');
 	}
 
-	/** Begin transactoin.
+	/**	Begin transaction.
 	 *
 	 * @see		 IF_DATABASE::Transaction()
 	 * @see		\PDO::beginTransaction()
 	 * @return	 bool
 	 */
-	function Transaction()
+	function Transaction( string $label = 'default' ) : bool
 	{
 		//	...
-		if( empty($this->_PDO) ){
-			return;
+		if(!$_PDO = self::_PDO($label) ){
+			return false;
 		}
 
 		//	...
-		$this->_debug['SQL'][] = 'Transaction Begin';
-		return $this->_PDO->beginTransaction();
+		return $_PDO->beginTransaction();
 	}
 
-	/** Commit transactoin.
+	/**	Commit transaction.
 	 *
 	 * @see		 IF_DATABASE::Commit()
 	 * @see		\PDO::commit()
 	 * @return	 bool
 	 */
-	function Commit()
+	function Commit( string $label = 'default' ) : bool
 	{
 		//	...
-		if( empty($this->_PDO) ){
-			return;
+		if(!$_PDO = self::_PDO($label) ){
+			return false;
 		}
 
 		//	...
-		$this->_debug['SQL'][] = 'Transaction Commit';
-		return $this->_PDO->commit();
+		return $_PDO->commit();
 	}
 
-	/** Rollback transactoin.
+	/**	Rollback transaction.
 	 *
 	 * @see		 IF_DATABASE::Rollback()
 	 * @see		\PDO::rollBack()
 	 * @return	 bool
 	 */
-	function Rollback()
+	function Rollback( string $label = 'default' ) : bool
 	{
 		//	...
-		if( empty($this->_PDO) ){
-			return;
+		if(!$_PDO = self::_PDO($label) ){
+			return false;
 		}
 
 		//	...
-		$this->_debug['SQL'][] = 'Transaction Rollback';
-		return $this->_PDO->rollBack();
+		return $_PDO->rollBack();
 	}
 
-	/** Do Quote by each product.
+	/**	Do Quote by each product.
 	 *
-	 * @see		 IF_DATABASE::Quote()
-	 * @param	 string		$value
-	 * @return	 string		$value
+	 * {@inheritDoc}
+	 * @see \OP\IF_DATABASE::Quote()
 	 */
-	function Quote($value)
+	function Quote( string $value, string $label='default' ) : string | false
 	{
 		//	...
-		if( empty($this->_PDO) ){
-			return;
+		if(!$pdo = $this->_PDO($label) ){
+			return false;
 		}
 
 		//	...
-		switch( $prod = $this->_config['prod'] ){
+		switch( $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) ){
 			case 'mysql':
 				$l = '`';
 				$r = '`';
@@ -478,14 +501,22 @@ class Database implements IF_DATABASE, IF_UNIT
 				break;
 
 			default:
-				throw new Exception("Has not been support this product. ($prod)");
+				throw new Exception("This driver is not yet supported: {$driver}");
 		}
+
+		//	...
+		if( strpos(' '.$value, $l) or strpos(' '.$value, $r) ){
+			throw new Exception("An invalid character string is included: {$value}");
+		}
+
+		//	...
+		$value = htmlentities($value, ENT_QUOTES, 'utf-8', true);
 
 		//	...
 		return $l.trim($value).$r;
 	}
 
-	/** Quick Query Language.
+	/**	Quick Query Language.
 	 *
 	 * @param  string $qql
 	 * @param  array  $options
@@ -496,16 +527,15 @@ class Database implements IF_DATABASE, IF_UNIT
 		return $this->QQL($qql, $options);
 	}
 
-	/** SQL Query.
+	/**	SQL Query.
 	 *
 	 * @param  string $query
 	 * @param  string $type
-	 * @return array
 	 */
-	function Query(string $query='', string $type='')
+	function Query( string $query, string $type='', string $label='default' )
 	{
 		//	...
-		return $this->SQL($query, $type);
+		return $this->SQL( $query, $type, $label );
 
 		/*
 		//	...
@@ -517,28 +547,31 @@ class Database implements IF_DATABASE, IF_UNIT
 		*/
 	}
 
-	/** Do QQL.
+	/**	Do QQL.
 	 *
 	 * @see		 IF_DATABASE::QQL()
 	 * @param	 string		 $qql
 	 * @param	 array		 $options
 	 * @return	 array		 $record
 	 */
-	function QQL(string $qql, array $options=[])
+	function QQL(string $qql, string|array $option='', string $label='default' )
 	{
 		include_once(__DIR__.'/QQL.class.php');
-		return DATABASE\QQL::Execute($qql, $options, $this);
+		return DATABASE\QQL::Execute($qql, $option, $label);
 	}
 
-	/** SQL is execute.
+	/**	SQL is execute.
 	 *
 	 * @see		 IF_DATABASE::SQL()
 	 * @param	 string		 $query
 	 * @param	 string		 $type
 	 * @return	 array		 $record
 	 */
-	function SQL(string $query, string $type='')
+	function SQL( string $query, string $type='', string $label='default' )
 	{
+		//	...
+		$_PDO = self::_PDO($label);
+
 		//	...
 		$type = strtolower($type);
 
@@ -548,8 +581,8 @@ class Database implements IF_DATABASE, IF_UNIT
 		}
 
 		//	Check of PDO instantiate.
-		if(!$this->_PDO ){
-			throw new Exception("Has not been instantiate PDO.");
+		if(!$this->_PDO($label) ){
+			throw new Exception("PDO is empty: label={$label}");
 		};
 
 		//	Remove space.
@@ -559,12 +592,12 @@ class Database implements IF_DATABASE, IF_UNIT
 		self::$_queries[] = $query;
 
 		//	Execute SQL statement.
-		$statement = $this->_PDO->query($query);
+		$statement = $_PDO->query($query);
 
 		//	In case of empty.
 		if(!$statement ){
 			include_once(__DIR__.'/ErrorInfo.class.php');
-			DATABASE\ErrorInfo::Set( $this->_PDO->errorInfo(), debug_backtrace(false) );
+			DATABASE\ErrorInfo::Set( $_PDO->errorInfo(), debug_backtrace(false) );
 			return ($type === 'select') ? []: false;
 		}
 
@@ -611,7 +644,7 @@ class Database implements IF_DATABASE, IF_UNIT
 				break;
 			*/
 			case 'insert':
-				if(!$result = $this->_PDO->lastInsertId(/* $name is necessary at PGSQL */) ){
+				if(!$result = $_PDO->lastInsertId(/* $name is necessary at PGSQL */) ){
 					$result = true;
 				}
 				break;
@@ -644,14 +677,14 @@ class Database implements IF_DATABASE, IF_UNIT
 				break;
 
 			default:
-				throw new Exception("Has not been support this type. ($type)");
+				throw new Exception("This type is has not been support yet: $type");
 		}
 
 		//	...
 		return isset($result) ? $result: [];
 	}
 
-	/** Get SQL Server version.
+	/**	Get SQL Server version.
 	 *
 	 * @return string
 	 */
@@ -660,7 +693,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		return $this->SQL('SELECT VERSION()')[0];
 	}
 
-	/** Debug
+	/**	Debug
 	 *
 	 * @created   2020-02-10
 	 */
