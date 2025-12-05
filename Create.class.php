@@ -1,20 +1,19 @@
 <?php
-/** op-unit-database:/Create.class.php
+/**	op-unit-database:/Create.class.php
  *
- * @creation  2018-12-19
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara
- * @copyright Tomoaki Nagahara All rights reserved.
+ * @created   2018-12-19
+ * @license   Apache-2.0
+ * @package   op-unit-database-ci
+ * @copyright (C) 2025 Tomoaki Nagahara
  */
 
-/** namespace
+/**	Namespace
  *
  * @creation  2018-12-19
  */
 namespace OP\UNIT\DATABASE;
 
-/** Used class
+/**	Use
  *
  * @creation  2019-03-04
  */
@@ -84,7 +83,7 @@ class Create
 		//	...
 		if( $this->_DB->Config()['prod'] === 'sqlite' ){
 			require_once(__DIR__.'/SQL_LITE.class.php');
-			return SQLITE::Create($config);
+			return SQL_LITE::Create($config);
 		};
 
 		//	...
