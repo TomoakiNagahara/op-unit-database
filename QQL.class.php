@@ -106,7 +106,7 @@ class QQL
 		return $result;
 	}
 
-	static private function _ParseField($field, $_db)
+	static private function _ParseField( string $field, string $label='default' )
 	{
 		//	...
 		$join = [];
@@ -115,27 +115,28 @@ class QQL
 		if( strpos($field, ',') ){
 			//	Many fields.
 			foreach( explode(',', $field) as $temp ){
-				$join[] = self::_ParseFieldFunc($temp, $_db);
+				$join[] = self::_ParseFieldFunc($temp, $label);
 			}
 		}else{
 			//	Single field.
-			$join[] = self::_ParseFieldFunc($field, $_db);
+			$join[] = self::_ParseFieldFunc($field, $label);
 		}
 
 		//	...
 		return join(',', $join);
 	}
 
-	static private function _ParseFieldFunc($field, $_db)
+	static private function _ParseFieldFunc( string $field, string $label='default' )
 	{
 		//	...
 		$match = NULL;
 
 		//	...
 		if( preg_match('|([_a-z0-9]+)\(([_a-z0-9]+)\)|i', $field, $match) ){
-			$field = $match[1] .'('. $_db->Quote($match[2]) .')';
+			$match[2] = OP()->Unit()->Database()->Quote($match[2], $label);
+			$field = "{$match[1]}({$match[2]})";
 		}else{
-			$field = $_db->Quote($field);
+			$field = OP()->Unit()->Database()->Quote( $field, $label );
 		}
 
 		//	...
@@ -146,16 +147,11 @@ class QQL
 	 *
 	 * @param   string      $qql
 	 * @param   string      $opt
-	 * @param   IF_DATABASE $_db
+	 * @param   string      $label
 	 * @return  array       $sql
 	 */
-	static function Parse($qql, $opt, $_db)
+	static function Parse( string $qql, string|array $opt='', string $label='default' )
 	{
-		//	...
-		if( empty($_db) ){
-			return;
-		}
-
 		//	...
 		$field  = '*';
 		$dbname = null;
@@ -166,10 +162,15 @@ class QQL
 		$offset = null;
 		$group  = null;
 
+		//	...
+		if(!$pdo = OP()->Unit()->Database()->PDO($label) ){
+			return;
+		}
+
 		//	field
 		if( $pos = strpos($qql, '<-') ){
 			list($field, $qql) = explode('<-', $qql);
-			$field = self::_ParseField(trim($field), $_db);
+			$field = self::_ParseField(trim($field), $label);
 		}else{
 			$field = '*';
 		}
@@ -219,11 +220,11 @@ class QQL
 					$value  =  'NULL';
 					$evalu  =  'IS';
 				}else{
-					$value = $_db->PDO()->quote($value);
+					$value = $pdo->quote($value);
 				}
 
 				//	...
-				$which = $_db->Quote($which);
+				$which = OP()->Unit()->Database()->Quote( $which, $label );
 				$where = "WHERE {$which} {$evalu} {$value}";
 			}else{
 				switch( count($temp) ){
@@ -241,11 +242,13 @@ class QQL
 		}
 
 		//	...
-		$dbname = $dbname ? $_db->Quote($dbname).'.': null;
-		$table  = $_db->Quote($table);
+		$dbname = $dbname ? OP()->Unit()->Database()->Quote($dbname, $label) : null;
+		$table  = OP()->Unit()->Database()->Quote($table, $label);
 
 		//	...
+		if( $opt ){
 		list($limit, $order, $offset) = self::_ParseOption($opt);
+		}
 
 		//	...
 		return [
@@ -266,13 +269,8 @@ class QQL
 	 * @param   IF_DATABASE $_db
 	 * @return  array       $record
 	 */
-	static function Select($select, $_db)
+	static function Select( array $select, string $label='default' )
 	{
-		//	...
-		if( empty($_db) ){
-			return;
-		}
-
 		//	...
 		$database = $table = $field = $where = $order = $limit = $offset = $group = null;
 
@@ -282,13 +280,18 @@ class QQL
 		}
 
 		//	...
+		if( $database ){
+			$database .= ' .';
+		}
+
+		//	...
 		$query = "SELECT $field FROM $database $table $where $group $order $limit $offset";
 
 		//	"LIMIT 1" --> 1
 		$limit = (int)substr($limit, strpos($limit, ' ')+1);
 
 		//	...
-		$record = $_db->Query($query, 'select');
+		$record = OP()->Unit()->Database()->Query($query, 'select', $label);
 
 		/*
 		//	QQL is " name <- t_table.id = $id " and limit is 1.
@@ -334,17 +337,12 @@ class QQL
 	 * @param   IF_DATABASE  $DB
 	 * @return  array        $record
 	 */
-	static function Execute($qql, $opt, $DB)
+	static function Execute( string $qql, string|array $opt='', string $label='default' )
 	{
 		//	...
-		if( empty($DB) ){
-			return;
-		}
+		$select = self::Parse( $qql, $opt, $label );
 
 		//	...
-		$select = self::Parse($qql, $opt, $DB);
-
-		//	...
-		return self::Select($select, $DB);
+		return self::Select( $select, $label );
 	}
 }
