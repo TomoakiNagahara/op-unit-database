@@ -78,8 +78,9 @@ class SQL_MY
 	static function DSN(array $config)
 	{
 		//	...
-		if(!$prod = $config['prod'] ?? null ){
-			throw new Exception("prod is empty.");
+		if(!$prod = $config['driver'] ?? null ){
+			OP()->Error('driver is empty.');
+			return false;
 		}
 
 		/**	Connect to an ODBC database using driver invocation
@@ -97,18 +98,26 @@ class SQL_MY
 
 		//	...
 		if(!$host = $config['host'] ?? null ){
-			throw new Exception("Has not been set host name.");
+			OP()->Error('host is empty.');
+			return false;
 		};
 
-		//	port
-		$port = $config['port'] ?? 3306;
-
 		//	Data Source Name
-		$dsn = "{$prod}:host={$host};port={$port}";
+		$dsn = "{$prod}:host={$host}";
 
-		//	Database
-		if( $database = $config['database'] ?? null ){
-			$dsn .= ";dbname={$database}";
+		//	Specify port number.
+		if( $host !== 'localhost' ){
+			//	Port is not empty.
+			if(!empty($config['port']) ){
+				//	Add port number.
+				$dsn .= ";port={$config['port']}";
+			}
+		}
+
+		//	Specify database name.
+		if(!empty($config['database']) ){
+			//	Add dababase name.
+			$dsn .= ";dbname={$config['database']}";
 		}
 
 		//	...
