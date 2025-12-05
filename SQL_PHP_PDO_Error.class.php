@@ -2,19 +2,18 @@
 /**	op-unit-database:/SQL_PHP_PDO_Error.class.php
  *
  * @creation  2019-01-09
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara <tomoaki.nagahara@gmail.com>
- * @copyright Tomoaki Nagahara All right reserved.
+ * @license    Apache-2.0
+ * @package    op-unit-database-ci
+ * @copyright  (C) 2025 Tomoaki Nagahara
  */
 
-/**	namespace
+/**	Namespace
  *
  * @creation  2019-01-09
  */
 namespace OP\UNIT\DATABASE;
 
-/**	Used class
+/**	Use
  *
  * @creation  2019-03-04
  */

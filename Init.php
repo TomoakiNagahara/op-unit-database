@@ -2,18 +2,17 @@
 /**	op-asset-model:/Init.php
  *
  * @created   2025-10-02
- * @version   1.0
- * @package   op-asset-model
- * @author    Tomoaki Nagahara
- * @copyright Tomoaki Nagahara All rights reserved.
+ * @license   Apache-2.0
+ * @package   op-unit-database-ci
+ * @copyright (C) 2025 Tomoaki Nagahara
  */
 
-/**	declare
+/**	declare strict type
  *
  */
 declare(strict_types=1);
 
-/**	namespace
+/**	Namespace
  *
  */
 namespace OP;

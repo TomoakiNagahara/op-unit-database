@@ -1,20 +1,19 @@
 <?php
-/** op-unit-database:/ErrorInfo.class.php
+/**	op-unit-database:/ErrorInfo.class.php
  *
  * @creation  2018-05-08
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara
- * @copyright Tomoaki Nagahara All rights reserved.
+ * @license   Apache-2.0
+ * @package   op-unit-database-ci
+ * @copyright (C) 2025 Tomoaki Nagahara
  */
 
-/** namespace
+/**	Namespace
  *
  * @creation  2018-05-08
  */
 namespace OP\UNIT\DATABASE;
 
-/** Used class
+/**	Use
  *
  * @creation  2019-03-04
  */

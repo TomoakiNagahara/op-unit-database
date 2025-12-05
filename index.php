@@ -1,11 +1,10 @@
 <?php
-/** op-unit-database:/index.php
+/**	op-unit-database:/index.php
  *
  * @creation  2018-04-25
- * @version   1.0
- * @package   op-unit-dump
- * @author    Tomoaki Nagahara
- * @copyright Tomoaki Nagahara All rights reserved.
+ * @license   Apache-2.0
+ * @package   op-unit-database-ci
+ * @copyright (C) 2025 Tomoaki Nagahara
  */
 //	...
 include_once(__DIR__.'/Database.class.php');

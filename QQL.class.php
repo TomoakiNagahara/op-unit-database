@@ -2,10 +2,9 @@
 /**	op-unit-database:/QQL.class.php
  *
  * @created   2017-01-24
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara
- * @copyright Tomoaki Nagahara All rights reserved.
+ * @license   Apache-2.0
+ * @package   op-unit-database-ci
+ * @copyright (C) 2025 Tomoaki Nagahara
  */
 
 /**	namespace

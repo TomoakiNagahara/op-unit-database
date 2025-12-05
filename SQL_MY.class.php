@@ -1,20 +1,19 @@
 <?php
 /**	op-unit-database:/SQL_MY.class.php
  *
- * @creation  2019-01-07
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara
- * @copyright Tomoaki Nagahara All rights reserved.
+ * @created   2019-01-07
+ * @license   Apache-2.0
+ * @package   op-unit-database-ci
+ * @copyright (C) 2025 Tomoaki Nagahara
  */
 
-/**	namespace
+/**	Namespace
  *
  * @creation  2019-01-07
  */
 namespace OP\UNIT\DATABASE;
 
-/**	Used class
+/**	Use
  *
  * @creation  2019-03-04
  */

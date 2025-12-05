@@ -1,26 +1,25 @@
 <?php
-/** op-unit-database:/Show.class.php
+/**	op-unit-database:/Show.class.php
  *
  * @created   2018-04-14
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara
- * @copyright Tomoaki Nagahara All rights reserved.
+ * @license   Apache-2.0
+ * @package   op-unit-database-ci
+ * @copyright (C) 2025 Tomoaki Nagahara
  */
 
-/** namespace
+/**	Namespace
  *
  * @created   2018-05-14
  */
 namespace OP\UNIT\DATABASE;
 
-/** Used class
+/**	Use
  *
  * @creation  2019-03-04
  */
 use OP\OP_CORE;
 
-/** Show
+/**	Show
  *
  * @created   2018-04-14
  */
