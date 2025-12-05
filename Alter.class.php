@@ -1,11 +1,10 @@
 <?php
 /**	op-unit-database:/Alter.class.php
  *
- * @creation  2019-01-18
- * @version   1.0
- * @package   op-unit-database
- * @author    Tomoaki Nagahara
- * @copyright Tomoaki Nagahara All rights reserved.
+ * @created   2019-01-18
+ * @license   Apache-2.0
+ * @package   op-unit-database-ci
+ * @copyright (C) 2025 Tomoaki Nagahara
  */
 
 /**	Namespace
