@@ -43,7 +43,7 @@ class SQL_LITE
 	{
 		//	...
 		if(!$path = $config['path'] ?? null ){
-			throw new \Exception("Has not been set file path.");
+			throw new \Exception("SQLite file path is not set.");
 		};
 
 		//	...
@@ -53,20 +53,20 @@ class SQL_LITE
 			if( file_exists($path) ){
 				/*
 				//	Parent directory.
-				$file = basename($path);
-				$perm = substr(sprintf('%o', fileperms($file)), -4);
+				$dir  = dirname($path);
+				$perm = substr(sprintf('%o', fileperms($dir)), -4);
 				if( '0777' !== $perm ){
-
+					OP()->Error("Permission error: {$dir}");
 				};
 
 				//	Database file.
 				$perm = substr(sprintf('%o', fileperms($path)), -4);
 				if( '0666' !== $perm ){
-
+					OP()->Error("Permission error: {$path}");
 				};
 				*/
 			}else{
-				throw new \Exception("Database file has not been exists. ($path)");
+				throw new \Exception("Database file has not been exists: {$path}");
 			}
 		};
 
@@ -83,7 +83,7 @@ class SQL_LITE
 	static function DSN(array $config)
 	{
 		//	...
-		$prod = $config['prod'] ?? '';
+		$driver = $config['driver'] ?? '';
 		$path = $config['path'] ?? '';
 
 		//	...
@@ -93,7 +93,7 @@ class SQL_LITE
 		}
 
 		//	...
-		$dsn  = "{$prod}:{$path}";
+		$dsn  = "{$driver}:{$path}";
 
 		//	...
 		return $dsn;
@@ -117,9 +117,11 @@ class SQL_LITE
 			//	...
 			return new \PDO($dsn);
 
+		/*
 		}catch( \PDOException $e ){
 			require_once(__DIR__.'/SQL_PHP_PDO_Error.class.php');
 			SQL_PHP_PDO_Error::Auto('mysql', $e);
+		*/
 		}catch( \Exception $e ){
 			Notice::Set($e->getMessage() . " ($dsn)");
 		};
