@@ -475,7 +475,7 @@ class Database implements IF_DATABASE, IF_UNIT
 		return $_PDO->rollBack();
 	}
 
-	/**	Do Quote by each product.
+	/**	Quote the field name.
 	 *
 	 * {@inheritDoc}
 	 * @see \OP\IF_DATABASE::Quote()
@@ -485,6 +485,14 @@ class Database implements IF_DATABASE, IF_UNIT
 		//	...
 		if(!$pdo = $this->_PDO($label) ){
 			return false;
+		}
+
+		//	...
+		$value = trim($value);
+
+		/* @var $match array */
+		if( preg_match('/([^_0-9A-Za-z-])/', $value, $match) ){
+			throw new Exception("The string contains invalid characters: {$value} --> {$match[1]}");
 		}
 
 		//	...
@@ -502,11 +510,6 @@ class Database implements IF_DATABASE, IF_UNIT
 
 			default:
 				throw new Exception("This driver is not yet supported: {$driver}");
-		}
-
-		//	...
-		if( strpos(' '.$value, $l) or strpos(' '.$value, $r) ){
-			throw new Exception("An invalid character string is included: {$value}");
 		}
 
 		//	...
