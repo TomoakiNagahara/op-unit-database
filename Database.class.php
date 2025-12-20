@@ -693,6 +693,9 @@ class Database implements IF_DATABASE, IF_UNIT
 	 */
 	function Version()
 	{
+		if( OP()->isCI() ){
+			return 'CI';
+		}
 		return $this->SQL('SELECT VERSION()')[0];
 	}
 
