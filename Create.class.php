@@ -43,7 +43,7 @@ class Create
 	 *
 	 * @param IF_DATABASE $DB
 	 */
-	function __construct( IF_DATABASE $DB=null )
+	function __construct( ?IF_DATABASE $DB = null )
 	{
 		$this->_DB = $DB;
 	}
