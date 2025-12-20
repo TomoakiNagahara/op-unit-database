@@ -206,7 +206,7 @@ class Database implements IF_DATABASE, IF_UNIT
 	 * @param  string $database
 	 * @return string $database
 	 */
-	function Database(string $database=null)
+	function Database( ?string $database = null )
 	{
 		/*
 		//	...
