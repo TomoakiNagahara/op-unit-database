@@ -287,8 +287,10 @@ class QQL
 		//	...
 		$query = "SELECT $field FROM $database $table $where $group $order $limit $offset";
 
+		/*
 		//	"LIMIT 1" --> 1
 		$limit = (int)substr($limit, strpos($limit, ' ')+1);
+		*/
 
 		//	...
 		$record = OP()->Unit()->Database()->Query($query, 'select', $label);
