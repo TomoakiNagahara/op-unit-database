@@ -80,7 +80,7 @@ class QQL
 	 * @param  string $options
 	 * @return array  $result
 	 */
-	static private function _ParseOptionString($options)
+	static private function _ParseOptionString( ?string $options = '' ) : array
 	{
 		//	...
 		$result = null;
@@ -103,7 +103,7 @@ class QQL
 		}
 
 		//	...
-		return $result;
+		return $result ?? [];
 	}
 
 	static private function _ParseField( string $field, string $label='default' )
