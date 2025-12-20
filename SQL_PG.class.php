@@ -42,8 +42,8 @@ class SQL_PG
 	static function Config(array $config)
 	{
 		//	...
-		if(!defined('\PDO::PGSQL_ATTR_DISABLE_PREPARES') ){
-			$module = 'postgresql';
+		if(!extension_loaded('pdo_pgsql') ){
+			$module = 'pdo_pgsql';
 			throw new \Exception("php-{$module} is not installed.");
 		};
 
