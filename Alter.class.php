@@ -7,6 +7,11 @@
  * @copyright (C) 2025 Tomoaki Nagahara
  */
 
+/**	Declare strict type
+ *
+ */
+declare(strict_types=1);
+
 /**	Namespace
  *
  */
@@ -42,7 +47,7 @@ class Alter
 	 *
 	 * @param \OP\UNIT\Database $DB
 	 */
-	function __construct( IF_DATABASE $DB=null )
+	function __construct( ?IF_DATABASE $DB = null )
 	{
 		$this->_DB = $DB;
 	}
